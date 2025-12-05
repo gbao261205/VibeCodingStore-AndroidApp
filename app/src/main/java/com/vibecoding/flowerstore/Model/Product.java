@@ -1,77 +1,103 @@
 package com.vibecoding.flowerstore.Model;
 
 import com.google.gson.annotations.SerializedName;
-import java.math.BigDecimal;
 
+/**
+ * Lớp này đại diện cho một đối tượng "Product" (Sản phẩm).
+ * Cấu trúc của lớp này khớp với cấu trúc của một sản phẩm trong mảng "content" từ API.
+ */
 public class Product {
 
-    @SerializedName("id")
-    private Integer id;
-
-    @SerializedName("name")
+    private int id;
     private String name;
 
-    @SerializedName("price")
-    private BigDecimal price;
-
     @SerializedName("imageUrl")
-    private String imageUrl;
+    private String image;
 
-    // Các trường này có thể null nếu sản phẩm không có khuyến mãi
-    @SerializedName("discountedPrice")
-    private BigDecimal discountedPrice;
+    private double price;
+    private double discountedPrice;
+    private int stock;
+    private boolean active;
 
-    @SerializedName("activeDiscount")
-    private ActiveDiscount activeDiscount;
 
-    // Constructor, Getters và Setters
-    public Product() {}
+    private Shop shop;
 
-    public Integer getId() {
+
+    private Category category;
+
+
+
+    public int getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public double getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public Shop getShop() {
+        return shop;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    // --- Setters (Không bắt buộc nếu bạn chỉ đọc dữ liệu từ API) ---
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public void setImage(String image) {
+        this.image = image;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public BigDecimal getDiscountedPrice() {
-        return discountedPrice;
-    }
-
-    public void setDiscountedPrice(BigDecimal discountedPrice) {
+    public void setDiscountedPrice(double discountedPrice) {
         this.discountedPrice = discountedPrice;
     }
 
-    public ActiveDiscount getActiveDiscount() {
-        return activeDiscount;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
-    public void setActiveDiscount(ActiveDiscount activeDiscount) {
-        this.activeDiscount = activeDiscount;
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setShop(Shop shop) {
+        this.shop = shop;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

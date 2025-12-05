@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FlowerStore">
         <activity
-            android:name=".IntroActivity"
+            android:name=".Activity.IntroActivity"
             android:exported="true"
             android:theme="@style/Theme.FlowerStore.FullScreen">
             <intent-filter>
@@ -23,7 +23,7 @@
 
         <!-- 2. Xóa intent-filter khỏi MainActivity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.MainActivity"
             android:exported="false">
             <!-- Xóa thẻ <intent-filter> khỏi đây -->
         </activity>

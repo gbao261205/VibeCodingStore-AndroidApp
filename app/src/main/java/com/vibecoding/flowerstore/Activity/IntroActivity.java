@@ -1,4 +1,4 @@
-package com.vibecoding.flowerstore;
+package com.vibecoding.flowerstore.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.vibecoding.flowerstore.Adapter.IntroImageAdapter;
 // Đảm bảo đường dẫn import này chính xác
+import com.vibecoding.flowerstore.R;
 import com.vibecoding.flowerstore.Transfer.DepthPageTransformer;
-import com.vibecoding.flowerstore.Transfer.ZoomOutPageTransformer;
 
 import java.util.Arrays;
 import java.util.List;
