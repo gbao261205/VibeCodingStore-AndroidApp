@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    private static final String API_BASE_URL = "https://holetinnghia-vibe-coding-store-api.hf.space/";
+    private static final String API_BASE_URL = "https://holetinnghia-vibe-coding-store-api.hf.space/api/v1/";
 
     private static Retrofit retrofit = null;
 
@@ -20,10 +20,6 @@ public class ApiClient {
             Gson gson = new GsonBuilder()
                     .setLenient()
                     .create();
-
-
-
-
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .connectTimeout(30, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
@@ -33,8 +29,7 @@ public class ApiClient {
             retrofit = new Retrofit.Builder()
                     .baseUrl(API_BASE_URL)
                     .client(okHttpClient)
-                    // 2. Sử dụng đối tượng Gson đã được cấu hình ở trên
-                    .addConverterFactory(GsonConverterFactory.create(gson)) // <-- Sửa dòng này
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;
