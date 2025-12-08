@@ -13,8 +13,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.FlowerStore">
+        android:theme="@style/Theme.FlowerStore"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Activity.ChangePassword"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.OtpForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.ForgotPasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".Activity.OtpActivity"
             android:exported="false" />

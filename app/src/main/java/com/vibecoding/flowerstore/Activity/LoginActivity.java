@@ -1,6 +1,7 @@
 package com.vibecoding.flowerstore.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,6 +45,10 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        tvForgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
 
         btnLogin.setOnClickListener(v -> {
             Login();
@@ -62,6 +67,10 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     LoginResponse loginResponse = response.body();
                     if (loginResponse != null){
+                        SharedPreferences prefs = getSharedPreferences("MY_APP_PREFS", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("ACCESS_TOKEN", response.body().getToken()); // Lưu token server trả về
+                        editor.apply();
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     }

@@ -8,4 +8,10 @@
     <color name="text_hint">#896172</color>
     <color name="border_color">#e6dbe0</color>
     <color name="slate_300">#cbd5e1</color>
+
+    <color name="bloom_primary">#F4ACB7</color>
+    <color name="bloom_bg">#FFFFFF</color>
+    <color name="bloom_text">#4A4A4A</color>
+    <color name="bloom_text_hint">#804A4A4A</color>
+    <color name="bloom_border">#E5E7EB</color>
 </resources>

@@ -68,7 +68,8 @@
                 android:inputType="textEmailAddress"
                 android:minHeight="56dp"
                 android:textColor="@color/text_dark"
-                android:textColorHint="@color/text_hint" />
+                android:textColorHint="@color/text_hint"
+                android:singleLine="true"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -106,7 +107,8 @@
                 android:inputType="textPassword"
                 android:minHeight="56dp"
                 android:textColor="@color/text_dark"
-                android:textColorHint="@color/text_hint" />
+                android:textColorHint="@color/text_hint"
+                android:singleLine="true"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView

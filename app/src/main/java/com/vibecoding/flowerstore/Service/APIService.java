@@ -31,9 +31,9 @@ public interface APIService {
 
     @POST("auth/resend-otp")
     Call<ResendOtpResponse> resendOtp(@Body ResendOtpRequest request);
-//
-//    @POST("auth/forgot-password")
-//    Call<MessageResponse> forgotPassword(@Body ForgotPasswordRequest request);
+
+    @POST("auth/forgot-password")
+    Call<ForgotPasswordResponse> forgotPassword(@Body ForgotPasswordRequest request);
 //
 //    @POST("auth/reset-password-verify")
 //    Call<MessageResponse> verifyResetPasswordOtp(@Body VerifyOtpRequest request);
