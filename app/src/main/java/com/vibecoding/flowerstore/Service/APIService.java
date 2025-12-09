@@ -40,9 +40,9 @@ public interface APIService {
 
     @POST("auth/reset-password-new")
     Call<ChangePasswordResponse> changePassword(@Body ChangePasswordRequest request);
-//
-//    @POST("auth/resend-reset-otp")
-//    Call<MessageResponse> resendResetOtp(@Body ForgotPasswordRequest request);
+
+    @POST("auth/resend-reset-otp")
+    Call<ResendOtpResponse> resendResetOtp(@Body ResendOtpRequest request);
 //
 //    // ================== 2. PRODUCTS ==================
 //    @GET("home/products")
