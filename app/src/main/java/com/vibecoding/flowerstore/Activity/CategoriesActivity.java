@@ -140,24 +140,34 @@ public class CategoriesActivity extends AppCompatActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        Intent intent = null;
 
+        // Xác định trang cần đến
         if (id == R.id.nav_home) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-            finish();
-
-        } else if (id == R.id.nav_categories) {
-            // Đang ở đây rồi
-
+            intent = new Intent(this, MainActivity.class);
+            // Cờ này quan trọng: Nó giúp MainActivity không bị tạo mới nếu đã có, tránh chồng layout
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         } else if (id == R.id.nav_favorites) {
-            Intent intent = new Intent(this, FavoriteActivity.class);
-            startActivity(intent);
-            overridePendingTransition(0, 0);
-
+            intent = new Intent(this, FavoriteActivity.class);
+        } else if (id == R.id.nav_categories) {
+            // Đang ở đây rồi thì không làm gì
+            return;
         } else if (id == R.id.nav_account) {
             Toast.makeText(this, "Chức năng đang phát triển", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // --- KHỐI LỆNH CHUYỂN TRANG KHÔNG HIỆU ỨNG (FIXED) ---
+        if (intent != null) {
+            startActivity(intent);
+            // 1. Tắt hiệu ứng khi trang MỚI hiện lên
+            overridePendingTransition(0, 0);
+
+            // Đóng trang hiện tại
+            finish();
+
+            // 2. Tắt hiệu ứng khi trang CŨ đóng lại (QUAN TRỌNG)
+            overridePendingTransition(0, 0);
         }
     }
 }
