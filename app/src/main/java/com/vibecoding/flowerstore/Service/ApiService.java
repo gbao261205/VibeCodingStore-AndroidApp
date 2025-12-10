@@ -7,6 +7,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiService {
@@ -27,6 +28,11 @@ public interface ApiService {
     );
     @GET("categories")
     Call<List<Category>> getCategories();
+    @GET("products")
+    Call<ApiResponse> getWishlistedProducts(@Query("sort") String sortParam);
+
+    @GET("products/category/{categorySlug}")
+    Call<ApiResponse> getProductsByCategory(@Path("categorySlug") String slug);
 
 //    // ================== 1. AUTHENTICATION ==================
 //    @POST("auth/login")

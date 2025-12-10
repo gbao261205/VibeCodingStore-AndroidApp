@@ -208,6 +208,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
+            android:id="@+id/nav_home"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -232,6 +233,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/nav_categories"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -256,6 +258,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/nav_favorites"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -280,6 +283,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/nav_account"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
