@@ -42,6 +42,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 2. Xóa intent-filter khỏi MainActivity -->
+        <activity
+            android:name=".Activity.MainActivity"
+            android:exported="false">
+            <!-- Xóa thẻ <intent-filter> khỏi đây -->
+        </activity>
+        <activity android:name=".Activity.CategoriesActivity" />
+        <activity android:name=".Activity.ProductDetailActivity" />
+        <activity android:name=".Activity.FavoriteActivity" />
+        <activity android:name=".Activity.CategoryProductsActivity" />
     </application>
 
 </manifest>
