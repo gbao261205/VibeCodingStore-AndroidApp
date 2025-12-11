@@ -282,9 +282,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             overridePendingTransition(0, 0);
 
         } else if (id == R.id.nav_account) {
-            Toast.makeText(this, "Chức năng đang phát triển", Toast.LENGTH_SHORT).show();
-            // Intent intent = new Intent(this, AccountActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
 
         } else if (id == R.id.nav_home) {
             // Đang ở Home thì không làm gì
