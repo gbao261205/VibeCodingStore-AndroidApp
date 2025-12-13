@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.view.View;
 import android.content.Intent;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private LinearLayout navCategories;
     private LinearLayout navFavorites;
     private LinearLayout navAccount;
+    private ImageButton cartButton;
 
     private static final String TAG = "MainActivity";
 
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         navCategories = findViewById(R.id.nav_categories);
         navFavorites = findViewById(R.id.nav_favorites);
         navAccount = findViewById(R.id.nav_account);
+        cartButton = findViewById(R.id.button_cart);
     }
 
     private void setupNavBarListeners() {
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         navCategories.setOnClickListener(this);
         navFavorites.setOnClickListener(this);
         navAccount.setOnClickListener(this);
+        cartButton.setOnClickListener(this);
     }
 
     private void setupImageSliderAndDots() {
@@ -282,9 +286,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             overridePendingTransition(0, 0);
 
         } else if (id == R.id.nav_account) {
-            Toast.makeText(this, "Chức năng đang phát triển", Toast.LENGTH_SHORT).show();
-            // Intent intent = new Intent(this, AccountActivity.class);
-            // startActivity(intent);
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+
+        } else if (id == R.id.button_cart) {
+            Intent intent = new Intent(this, CartActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_home) {
             // Đang ở Home thì không làm gì
