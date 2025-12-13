@@ -166,7 +166,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/home_button"
+            android:id="@+id/nav_home"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -174,23 +174,24 @@
             android:gravity="center"
             android:paddingTop="8dp"
             android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:focusable="true">
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_home_filled"
-                app:tint="@color/text_secondary" />
+                android:contentDescription="Trang chủ"
+                app:tint="#ef3985" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trang chủ"
                 android:textSize="10sp"
-                android:textColor="@color/text_secondary"/>
+                android:textStyle="bold"
+                android:textColor="#ef3985"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/category_button"
+            android:id="@+id/nav_categories"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -198,23 +199,24 @@
             android:gravity="center"
             android:paddingTop="8dp"
             android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:focusable="true">
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_grid_view"
-                app:tint="@color/text_secondary" />
+                android:contentDescription="Danh mục"
+                app:tint="#896172" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Danh mục"
                 android:textSize="10sp"
-                android:textColor="@color/text_secondary"/>
+                android:textStyle="normal"
+                android:textColor="#896172"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/favorite_button"
+            android:id="@+id/nav_favorites"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -222,23 +224,24 @@
             android:gravity="center"
             android:paddingTop="8dp"
             android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:focusable="true">
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_favorite"
-                app:tint="@color/text_secondary" />
+                android:contentDescription="Yêu thích"
+                app:tint="#896172" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Yêu thích"
                 android:textSize="10sp"
-                android:textColor="@color/text_secondary"/>
+                android:textStyle="normal"
+                android:textColor="#896172"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/profile_button"
+            android:id="@+id/nav_account"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -246,20 +249,20 @@
             android:gravity="center"
             android:paddingTop="8dp"
             android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackground">
+            android:focusable="true">
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_person"
-                app:tint="@color/primary" />
+                android:contentDescription="Tài khoản"
+                app:tint="#896172" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tài khoản"
                 android:textSize="10sp"
-                android:textStyle="bold"
-                android:textColor="@color/primary"/>
+                android:textStyle="normal"
+                android:textColor="#896172"/>
         </LinearLayout>
     </LinearLayout>
 

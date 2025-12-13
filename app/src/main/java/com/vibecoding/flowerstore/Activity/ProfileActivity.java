@@ -30,7 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Button editProfileButton, logoutButton;
     private MaterialButton orderHistoryButton, savedAddressesButton, paymentMethodsButton, helpSupportButton;
     private LinearLayout userInfoLayout;
-    private LinearLayout homeButton, categoryButton, favoriteButton, profileButton;
+    private LinearLayout navHome, navCategories, navFavorites, navAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,22 +58,29 @@ public class ProfileActivity extends AppCompatActivity {
         helpSupportButton = findViewById(R.id.help_support_button);
         userInfoLayout = findViewById(R.id.user_info_layout);
 
-        homeButton = findViewById(R.id.home_button);
-        categoryButton = findViewById(R.id.category_button);
-        favoriteButton = findViewById(R.id.favorite_button);
-        profileButton = findViewById(R.id.profile_button);
+        navHome = findViewById(R.id.nav_home);
+        navCategories = findViewById(R.id.nav_categories);
+        navFavorites = findViewById(R.id.nav_favorites);
+        navAccount = findViewById(R.id.nav_account);
     }
 
     private void setupNavigation() {
-        homeButton.setOnClickListener(v -> {
+        navHome.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             finish();
         });
-        profileButton.setOnClickListener(v -> Toast.makeText(ProfileActivity.this, "Bạn đang ở trang Tài khoản", Toast.LENGTH_SHORT).show());
-        categoryButton.setOnClickListener(v -> Toast.makeText(ProfileActivity.this, "Chức năng Danh mục sắp có!", Toast.LENGTH_SHORT).show());
-        favoriteButton.setOnClickListener(v -> Toast.makeText(ProfileActivity.this, "Chức năng Yêu thích sắp có!", Toast.LENGTH_SHORT).show());
+        navCategories.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CategoriesActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0); // Thêm cái này cho mượt
+        });
+        navFavorites.setOnClickListener(v ->{
+            Intent intent = new Intent(this, FavoriteActivity.class);
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        });
     }
 
     private void checkLoginStatusAndFetchProfile() {

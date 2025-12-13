@@ -59,7 +59,7 @@ public interface ApiService {
 //    Call<RefreshTokenResponse> refreshToken();
 //
     @POST("auth/register")
-Call<RegisterResponse> register(@Body RegisterRequest request);
+    Call<RegisterResponse> register(@Body RegisterRequest request);
 
     @POST("auth/verify-otp")
     Call<VerifyOtpResponse> verifyOtp(@Body VerifyOtpRequest request);
