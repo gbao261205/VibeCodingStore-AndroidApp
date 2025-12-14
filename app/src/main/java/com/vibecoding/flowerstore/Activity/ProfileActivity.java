@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,10 +29,13 @@ public class ProfileActivity extends AppCompatActivity {
 
     private static final String TAG = "ProfileActivity";
     private TextView userName, userEmail;
-    private Button editProfileButton, logoutButton;
+    private Button logoutButton;
     private MaterialButton orderHistoryButton, savedAddressesButton, paymentMethodsButton, helpSupportButton;
     private LinearLayout userInfoLayout;
     private LinearLayout navHome, navCategories, navFavorites, navAccount;
+    ImageView avatar;
+
+    private static User cachedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         setupViews();
         setupNavigation();
+
+        avatar.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
@@ -50,13 +60,13 @@ public class ProfileActivity extends AppCompatActivity {
     private void setupViews() {
         userName = findViewById(R.id.user_name);
         userEmail = findViewById(R.id.user_email);
-        editProfileButton = findViewById(R.id.edit_profile_button);
         logoutButton = findViewById(R.id.logout_button);
         orderHistoryButton = findViewById(R.id.order_history_button);
         savedAddressesButton = findViewById(R.id.saved_addresses_button);
         paymentMethodsButton = findViewById(R.id.payment_methods_button);
         helpSupportButton = findViewById(R.id.help_support_button);
         userInfoLayout = findViewById(R.id.user_info_layout);
+        avatar = findViewById(R.id.avatar);
 
         navHome = findViewById(R.id.nav_home);
         navCategories = findViewById(R.id.nav_categories);
@@ -88,8 +98,13 @@ public class ProfileActivity extends AppCompatActivity {
         String token = prefs.getString("ACCESS_TOKEN", null);
 
         if (token != null) {
-            Log.d(TAG, "Token found. Fetching user profile...");
-            fetchUserProfile("Bearer " + token);
+            if (cachedUser != null) {
+                Log.d(TAG, "User profile found in cache. Displaying cached data.");
+                showLoggedInUI(cachedUser);
+            } else {
+                Log.d(TAG, "Token found. Fetching user profile...");
+                fetchUserProfile("Bearer " + token);
+            }
         } else {
             Log.d(TAG, "No token found. Displaying guest UI.");
             showGuestUI();
@@ -105,6 +120,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     User user = response.body();
+                    cachedUser = user;
                     Log.d(TAG, "Profile fetched successfully: " + user.getFullName());
                     showLoggedInUI(user);
                 } else {
@@ -124,17 +140,26 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void showLoggedInUI(User user) {
         userName.setText(user.getFullName());
-        userEmail.setText(user.getEmail());
+        if (user.getEmail() != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                userEmail.setText(Html.fromHtml(user.getEmail(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                userEmail.setText(Html.fromHtml(user.getEmail()));
+            }
+        }
         userEmail.setVisibility(View.VISIBLE);
 
-        editProfileButton.setVisibility(View.VISIBLE);
         orderHistoryButton.setVisibility(View.VISIBLE);
         savedAddressesButton.setVisibility(View.VISIBLE);
         paymentMethodsButton.setVisibility(View.VISIBLE);
         helpSupportButton.setVisibility(View.VISIBLE);
         logoutButton.setVisibility(View.VISIBLE);
 
-        userInfoLayout.setClickable(false);
+        userInfoLayout.setClickable(true);
+        userInfoLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+            startActivity(intent);
+        });
 
         logoutButton.setOnClickListener(v -> handleAuthenticationError());
     }
@@ -142,12 +167,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void showGuestUI() {
         userName.setText("Xin hãy đăng nhập");
         userEmail.setText("Chào mừng đến với Flower Store");
-
-        editProfileButton.setVisibility(View.GONE);
-        orderHistoryButton.setVisibility(View.GONE);
-        savedAddressesButton.setVisibility(View.GONE);
-        paymentMethodsButton.setVisibility(View.GONE);
-        logoutButton.setVisibility(View.GONE);
+        cachedUser = null;
 
         userInfoLayout.setClickable(true);
         userInfoLayout.setOnClickListener(v -> {
@@ -164,5 +184,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Phiên đăng nhập đã hết hạn", Toast.LENGTH_SHORT).show();
         showGuestUI();
+    }
+
+    public static void invalidateProfileCache() {
+        cachedUser = null;
     }
 }

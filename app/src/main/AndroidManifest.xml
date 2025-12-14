@@ -15,18 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FlowerStore"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".Activity.EditProfileActivity"
+            android:exported="false" />
         <!-- 1. Đặt IntroActivity làm màn hình khởi chạy -->
         <activity
             android:name=".Activity.IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- 2. Khai báo các Activity khác -->
+        </activity> <!-- 2. Khai báo các Activity khác -->
         <activity
             android:name=".Activity.MainActivity"
             android:exported="false" />
@@ -66,7 +67,6 @@
         <activity
             android:name=".Activity.CartActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>
