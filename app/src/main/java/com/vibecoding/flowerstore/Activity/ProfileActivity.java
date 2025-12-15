@@ -159,6 +159,7 @@ public class ProfileActivity extends AppCompatActivity {
         userInfoLayout.setClickable(true);
         userInfoLayout.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+            intent.putExtra("user", cachedUser);
             startActivity(intent);
         });
 
