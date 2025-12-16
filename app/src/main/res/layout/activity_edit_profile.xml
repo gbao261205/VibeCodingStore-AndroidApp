@@ -205,22 +205,6 @@
                 app:cornerRadius="12dp"
                 android:layout_marginBottom="12dp"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnLogout"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="Đăng xuất"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/profile_red"
-                app:icon="@drawable/ic_logout"
-                app:iconTint="@color/profile_red"
-                app:iconGravity="textStart"
-                app:cornerRadius="12dp"
-                android:layout_marginBottom="12dp"/>
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

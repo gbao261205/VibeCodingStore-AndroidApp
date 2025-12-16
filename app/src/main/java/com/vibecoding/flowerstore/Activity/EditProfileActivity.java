@@ -1,12 +1,14 @@
-package com.vibecoding.flowerstore.Activity;
+package com.vibecoding.flowerstore.Activity; // Thay bằng package thực tế của bạn
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.provider.OpenableColumns;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,227 +19,234 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.cloudinary.android.MediaManager;
-import com.cloudinary.android.callback.ErrorInfo;
-import com.cloudinary.android.callback.UploadCallback;
+import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 import com.vibecoding.flowerstore.Model.User;
 import com.vibecoding.flowerstore.R;
-// TODO: 1. Thêm thư viện Cloudinary vào build.gradle
-// implementation "com.cloudinary:cloudinary-android:2.2.0"
-//
-// import com.cloudinary.android.MediaManager;
-// import com.cloudinary.android.callback.ErrorInfo;
-// import com.cloudinary.android.callback.UploadCallback;
+import com.vibecoding.flowerstore.Service.ApiService;
+import com.vibecoding.flowerstore.Service.EditProfileRequest;
+import com.vibecoding.flowerstore.Service.RetrofitClient;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private static final String TAG = "EditProfileActivity";
-    private ImageView ivAvatar, btnBack;
-    private TextView tvNameDisplay;
-    private TextView tvEmailDisplay;
-    private EditText edtName, edtEmail, edtPhone;
-    private Button btnSave;
+    // Khai báo View theo đúng ID trong Layout XML
+    private ImageView btnBack, ivAvatar;
+    private EditText edtName, edtPhone, edtEmail;
+    private TextView tvNameDisplay, tvEmailDisplay;
+    private MaterialButton btnSave;
 
-    private User currentUser;
-    private Uri selectedImageUri;
+    // Biến lưu Uri ảnh được chọn
+    private Uri selectedImageUri = null;
 
-    // Trình khởi chạy để chọn ảnh từ thư viện
-    private final ActivityResultLauncher<Intent> pickImageLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    selectedImageUri = result.getData().getData();
-                    // Hiển thị ảnh vừa chọn
-                    Glide.with(this).load(selectedImageUri).into(ivAvatar);
+    // Launcher chọn ảnh mới
+    private final ActivityResultLauncher<String> pickImageLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    selectedImageUri = uri;
+                    // Dùng Glide để hiển thị ảnh vừa chọn, có bo tròn
+                    Glide.with(this).load(uri).circleCrop().into(ivAvatar);
                 }
-            });
-
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
+        setContentView(R.layout.activity_edit_profile); // Đảm bảo tên layout đúng
 
-        // Ánh xạ (Giả sử bạn có các ID này trong file XML)
-        ivAvatar = findViewById(R.id.ivAvatar);
-        tvNameDisplay = findViewById(R.id.tvNameDisplay);
-        tvEmailDisplay = findViewById(R.id.tvEmailDisplay);
-        edtName = findViewById(R.id.edtName);
-        edtEmail = findViewById(R.id.edtEmail);
-        edtPhone = findViewById(R.id.edtPhone);
-        btnSave = findViewById(R.id.btnSave);
-        btnBack = findViewById(R.id.btnBack);
+        initViews();
+        setupListeners();
 
-        // TODO: 2. Khởi tạo Cloudinary (thường làm trong lớp Application)
-
-        // Lấy dữ liệu người dùng từ Intent
+        // Lấy dữ liệu User được truyền từ ProfileActivity và hiển thị lên UI
         if (getIntent().hasExtra("user")) {
-            currentUser = (User) getIntent().getSerializableExtra("user");
-        }
-
-        if (currentUser != null) {
-            populateUserData();
+            User user = (User) getIntent().getSerializableExtra("user");
+            if (user != null) {
+                populateUserData(user);
+            } else {
+                Toast.makeText(this, "Lỗi: Không nhận được dữ liệu người dùng.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         } else {
-            Toast.makeText(this, "Không có dữ liệu người dùng", Toast.LENGTH_SHORT).show();
+            // Nếu không có dữ liệu, không thể hoạt động -> đóng Activity
+            Toast.makeText(this, "Lỗi: Không tìm thấy dữ liệu để chỉnh sửa.", Toast.LENGTH_SHORT).show();
             finish();
         }
-
-        setupListeners();
     }
 
-    /**
-     * Điền thông tin người dùng lên giao diện
-     */
-    private void populateUserData() {
-        tvNameDisplay.setText(currentUser.getFullName());
-        tvEmailDisplay.setText(currentUser.getEmail());
-        edtName.setText(currentUser.getFullName());
-        edtEmail.setText(currentUser.getEmail());
-        edtPhone.setText(currentUser.getPhoneNumber());
+    private void initViews() {
+        btnBack = findViewById(R.id.btnBack);
+        ivAvatar = findViewById(R.id.ivAvatar);
 
-        // Dùng Glide để hiển thị ảnh đại diện
+        tvNameDisplay = findViewById(R.id.tvNameDisplay);
+        tvEmailDisplay = findViewById(R.id.tvEmailDisplay);
+
+        edtName = findViewById(R.id.edtName);
+        edtPhone = findViewById(R.id.edtPhone);
+        edtEmail = findViewById(R.id.edtEmail); // Readonly
+
+        btnSave = findViewById(R.id.btnSave);
+    }
+
+    private void populateUserData(User user) {
+        // Hiển thị dữ liệu lên các View
+        tvNameDisplay.setText(user.getFullName());
+        edtName.setText(user.getFullName());
+        edtPhone.setText(user.getPhoneNumber());
+
+        // --- SỬA LỖI HIỂN THỊ EMAIL ---
+        String encodedEmail = user.getEmail();
+        if (encodedEmail != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                tvEmailDisplay.setText(Html.fromHtml(encodedEmail, Html.FROM_HTML_MODE_LEGACY));
+                edtEmail.setText(Html.fromHtml(encodedEmail, Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                tvEmailDisplay.setText(Html.fromHtml(encodedEmail));
+                edtEmail.setText(Html.fromHtml(encodedEmail));
+            }
+        }
+        // --- KẾT THÚC SỬA LỖI ---
+
+        // Dùng Glide để tải và hiển thị ảnh đại diện, có bo tròn
         Glide.with(this)
-                .load(currentUser.getAvatar())
-                .placeholder(R.drawable.ic_person) // Ảnh chờ
-                .error(R.drawable.ic_person)       // Ảnh lỗi
+                .load(user.getAvatar())
+                .circleCrop() // Bo tròn ảnh
+                .placeholder(R.drawable.ic_person) // Ảnh mặc định trong lúc tải
+                .error(R.drawable.ic_person)       // Ảnh mặc định nếu lỗi
                 .into(ivAvatar);
     }
 
-    /**
-     * Cài đặt sự kiện cho các nút
-     */
     private void setupListeners() {
+        // 1. Back button
         btnBack.setOnClickListener(v -> finish());
 
-        ivAvatar.setOnClickListener(v -> {
-            // Mở thư viện để chọn ảnh
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            pickImageLauncher.launch(intent);
-        });
+        // 2. Chọn ảnh avatar
+        ivAvatar.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
-        btnSave.setOnClickListener(v -> {
-            if (validateInput()) {
-                if (selectedImageUri != null) {
-                    // Nếu có ảnh mới, tải lên trước
-                    uploadImageToCloudinary(selectedImageUri);
-                } else {
-                    // Nếu không có ảnh mới, cập nhật thông tin với URL ảnh cũ
-                    updateProfile(currentUser.getAvatar());
-                }
-            }
-        });
+        // 3. Nút Lưu
+        btnSave.setOnClickListener(v -> handleUpdateProfile());
     }
 
-    /**
-     * Kiểm tra dữ liệu nhập vào
-     */
-    private boolean validateInput() {
-        String name = edtName.getText().toString().trim();
-        String phone = edtPhone.getText().toString().trim();
+    private void handleUpdateProfile() {
+        String fullName = edtName.getText().toString().trim();
+        String phoneNumber = edtPhone.getText().toString().trim();
 
-        if (TextUtils.isEmpty(name)) {
-            edtName.setError("Tên không được để trống");
-            return false;
+        if (fullName.isEmpty()) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ tên", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        if (TextUtils.isEmpty(phone)) {
-            edtPhone.setError("Số điện thoại không được để trống");
-            return false;
+        // --- BƯỚC 1: Xử lý phần JSON (request) ---
+        EditProfileRequest profileRequest = new EditProfileRequest(fullName, phoneNumber);
+        String jsonString = new Gson().toJson(profileRequest);
+
+        // Tạo RequestBody với type là application/json cho part "request"
+        RequestBody requestPart = RequestBody.create(
+                MediaType.parse("application/json; charset=utf-8"),
+                jsonString
+        );
+
+        // --- BƯỚC 2: Xử lý phần File Ảnh (avatarFile) ---
+        MultipartBody.Part avatarFilePart = null;
+
+        if (selectedImageUri != null) {
+            File file = getFileFromUri(selectedImageUri);
+            if (file != null) {
+                // Tạo RequestBody cho file ảnh
+                RequestBody requestFile = RequestBody.create(
+                        MediaType.parse(getContentResolver().getType(selectedImageUri)),
+                        file
+                );
+                // "avatarFile" phải khớp với key Server yêu cầu
+                avatarFilePart = MultipartBody.Part.createFormData("avatarFile", file.getName(), requestFile);
+            }
         }
-        // Có thể thêm các kiểm tra khác cho SĐT nếu muốn
 
-        return true;
-    }
-
-    /**
-     * Tải ảnh lên Cloudinary
-     */
-    private void uploadImageToCloudinary(Uri imageUri) {
-        Toast.makeText(this, "Đang tải ảnh lên...", Toast.LENGTH_SHORT).show();
-
-        // TODO: 3. Viết mã xử lý tải ảnh lên Cloudinary
-
-        MediaManager.get().upload(imageUri).callback(new UploadCallback() {
-            @Override
-            public void onStart(String requestId) {
-                // Ví dụ: Hiện ProgressBar
-            }
-
-            @Override
-            public void onProgress(String requestId, long bytes, long totalBytes) {
-                // Cập nhật ProgressBar
-            }
-
-            @Override
-            public void onSuccess(String requestId, Map resultData) {
-                // Lấy URL ảnh đã tải lên
-                String imageUrl = (String) resultData.get("url");
-                Log.d(TAG, "Tải ảnh thành công: " + imageUrl);
-                // Sau khi có URL, gọi hàm cập nhật thông tin
-                updateProfile(imageUrl);
-            }
-
-            @Override
-            public void onError(String requestId, ErrorInfo error) {
-                Log.e(TAG, "Lỗi tải ảnh: " + error.getDescription());
-                Toast.makeText(EditProfileActivity.this, "Tải ảnh lên thất bại", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onReschedule(String requestId, ErrorInfo error) {
-                // Xử lý
-            }
-        }).dispatch();
-
-
-//        // ---- MÃ GIẢ LẬP: Xóa phần này khi đã có Cloudinary thật ----
-//        String placeholderUrl = "https://res.cloudinary.com/demo/image/upload/sample.jpg";
-//        updateProfile(placeholderUrl);
-//        // ---- KẾT THÚC MÃ GIẢ LẬP ----
-    }
-
-    /**
-     * Gọi API để cập nhật thông tin người dùng
-     */
-    private void updateProfile(String avatarUrl) {
-        String newName = edtName.getText().toString().trim();
-        String newPhone = edtPhone.getText().toString().trim();
-
-        Log.d(TAG, "Chuẩn bị cập nhật: Tên: " + newName + ", SĐT: " + newPhone + ", Ảnh: " + avatarUrl);
-        Toast.makeText(this, "Đang cập nhật...", Toast.LENGTH_SHORT).show();
-
-        // TODO: 4. Gọi API cập nhật thông tin bằng Retrofit
-        /*
+        // --- BƯỚC 3: Gọi API thông qua RetrofitClient ---
+        // Sử dụng getClient(this) để Retrofit tự động gắn Token
         ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
-        Call<User> call = apiService.updateUserProfile(newName, newPhone, avatarUrl); // Giả sử có phương thức này
-        call.enqueue(new Callback<User>() {
+
+        apiService.updateProfile(requestPart, avatarFilePart).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(EditProfileActivity.this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                    // Xóa cache cũ để ProfileActivity tải lại thông tin mới
                     ProfileActivity.invalidateProfileCache();
-                    finish(); // Quay về trang Profile
+                    finish();
                 } else {
-                    Toast.makeText(EditProfileActivity.this, "Cập nhật thất bại, mã lỗi: " + response.code(), Toast.LENGTH_SHORT).show();
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                        Toast.makeText(EditProfileActivity.this, "Lỗi: " + response.code() + " - " + errorBody, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Toast.makeText(EditProfileActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(EditProfileActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("API_ERROR", t.getMessage());
             }
         });
-        */
+    }
 
-        // ---- MÃ GIẢ LẬP: Xóa phần này khi đã có API thật ----
-        Toast.makeText(this, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-        ProfileActivity.invalidateProfileCache();
-        finish();
-        // ---- KẾT THÚC MÃ GIẢ LẬP ----
+    // --- Helper: Chuyển Uri thành File thực tế (Bắt buộc cho Android 10+) ---
+    private File getFileFromUri(Uri uri) {
+        try {
+            String fileName = getFileName(uri);
+            File tempFile = new File(getCacheDir(), fileName);
+
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            OutputStream outputStream = new FileOutputStream(tempFile);
+
+            if (inputStream != null) {
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.close();
+                inputStream.close();
+            }
+            return tempFile;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
+                if (cursor != null && cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if(index >= 0) result = cursor.getString(index);
+                }
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result != null ? result : "temp_avatar.jpg";
     }
 }
