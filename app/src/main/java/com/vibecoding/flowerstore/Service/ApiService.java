@@ -104,22 +104,27 @@ public interface ApiService {
 //
 //    // ================== 3. CART ==================
     @GET("cart")
-    Call<CartDTO> getCart();
+    Call<CartDTO> getCart(@Header("Authorization") String authToken);
 
     @POST("cart/add")
     Call<CartDTO> addToCart(
+            @Header("Authorization") String authToken,
             @Query("productId") int productId,
             @Query("quantity") int quantity
     );
 
     @PUT("cart/update-quantity")
     Call<CartDTO> updateCartQuantity(
+            @Header("Authorization") String authToken,
             @Query("productId") int productId,
             @Query("quantity") int quantity
     );
 
     @POST("cart/remove")
-    Call<CartDTO> removeFromCart(@Query("productId") int productId);
+    Call<CartDTO> removeFromCart(
+            @Header("Authorization") String authToken,
+            @Query("productId") int productId
+    );
 
 //    // ================== 4. ORDERS ==================
 //    @GET("orders/checkout-details")

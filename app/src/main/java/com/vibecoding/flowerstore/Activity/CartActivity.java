@@ -80,7 +80,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartL
         if (authToken == null) return;
 
         ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
-        Call<CartDTO> call = apiService.getCart();
+        Call<CartDTO> call = apiService.getCart(authToken);
 
         call.enqueue(new Callback<CartDTO>() {
             @Override
@@ -105,7 +105,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartL
     @Override
     public void onQuantityChanged(int productId, int newQuantity) {
         ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
-        Call<CartDTO> call = apiService.updateCartQuantity(productId, newQuantity);
+        Call<CartDTO> call = apiService.updateCartQuantity(authToken, productId, newQuantity);
 
         call.enqueue(new Callback<CartDTO>() {
             @Override
@@ -127,7 +127,7 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartL
     @Override
     public void onRemoveItem(int productId) {
         ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
-        Call<CartDTO> call = apiService.removeFromCart(productId);
+        Call<CartDTO> call = apiService.removeFromCart(authToken, productId);
 
         call.enqueue(new Callback<CartDTO>() {
             @Override

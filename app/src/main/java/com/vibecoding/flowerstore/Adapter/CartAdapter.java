@@ -1,6 +1,7 @@
 package com.vibecoding.flowerstore.Adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.vibecoding.flowerstore.Model.CartItem;
+import com.vibecoding.flowerstore.Model.Product;
 import com.vibecoding.flowerstore.R;
 
 import java.text.NumberFormat;
@@ -25,7 +27,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     private Context context;
     private CartListener listener;
 
-    // Interface to communicate with the Activity
     public interface CartListener {
         void onQuantityChanged(int productId, int newQuantity);
         void onRemoveItem(int productId);
@@ -47,31 +48,38 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     @Override
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
         CartItem item = cartItems.get(position);
+        Product product = item.getProduct();
 
-        holder.productName.setText(item.getProduct().getName());
+        holder.productName.setText(product.getName());
         holder.quantityText.setText(String.valueOf(item.getQuantity()));
 
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-        holder.productPrice.setText(currencyFormat.format(item.getProduct().getDiscountedPrice()));
+
+        double discountedPrice = product.getDiscountedPrice();
+        double originalPrice = product.getPrice();
+
+        if (discountedPrice > 0 && discountedPrice < originalPrice) {
+            holder.productPrice.setText(currencyFormat.format(discountedPrice));
+        } else {
+            holder.productPrice.setText(currencyFormat.format(originalPrice));
+        }
 
         Glide.with(context)
-                .load(item.getProduct().getImage()) // Corrected from getImageUrl()
+                .load(product.getImage())
                 .placeholder(R.drawable.placeholder_product)
                 .into(holder.productImage);
 
-        // --- Event Listeners ---
         holder.increaseButton.setOnClickListener(v -> {
             int newQuantity = item.getQuantity() + 1;
-            listener.onQuantityChanged(item.getProduct().getId(), newQuantity);
+            listener.onQuantityChanged(product.getId(), newQuantity);
         });
 
         holder.decreaseButton.setOnClickListener(v -> {
             int newQuantity = item.getQuantity() - 1;
             if (newQuantity > 0) {
-                listener.onQuantityChanged(item.getProduct().getId(), newQuantity);
+                listener.onQuantityChanged(product.getId(), newQuantity);
             } else {
-                // If quantity becomes 0, remove the item
-                listener.onRemoveItem(item.getProduct().getId());
+                listener.onRemoveItem(product.getId());
             }
         });
     }
