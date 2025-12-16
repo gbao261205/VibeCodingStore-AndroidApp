@@ -3,10 +3,12 @@ package com.vibecoding.flowerstore.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,7 +30,6 @@ import retrofit2.Response;
 
 public class CartActivity extends AppCompatActivity implements CartAdapter.CartListener {
 
-    private static final String TAG = "CartActivity";
     private RecyclerView cartRecyclerView;
     private CartAdapter cartAdapter;
     private TextView totalAmountText;
@@ -60,8 +61,6 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartL
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     private void setupViews() {
@@ -147,5 +146,14 @@ public class CartActivity extends AppCompatActivity implements CartAdapter.CartL
         cartAdapter.updateData(cart.getItems());
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
         totalAmountText.setText(currencyFormat.format(cart.getTotalAmount()));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

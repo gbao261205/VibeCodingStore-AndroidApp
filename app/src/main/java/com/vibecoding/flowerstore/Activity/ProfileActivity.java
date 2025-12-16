@@ -84,28 +84,22 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    // --- ĐÂY LÀ PHẦN SỬA ĐỔI NAVIGATION ---
     private void setupNavigation() {
-        // 1. Về Trang Chủ: Cần finish() để xóa các trang cũ, tránh nặng máy
         navHome.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-            // Cờ này giúp xóa sạch các trang đang mở đè lên Home
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            overridePendingTransition(0, 0); // Tắt hiệu ứng
+            overridePendingTransition(0, 0);
             finish();
         });
 
-        // 2. Sang Danh Mục: KHÔNG finish(), chỉ thêm cờ SingleTop
         navCategories.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, CategoriesActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // Tránh mở 2 lần trang giống nhau
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             overridePendingTransition(0, 0);
-            // KHÔNG gọi finish() -> Trang cũ sẽ nằm dưới, tạo cảm giác mượt hơn
         });
 
-        // 3. Sang Yêu Thích: KHÔNG finish()
         navFavorites.setOnClickListener(v ->{
             Intent intent = new Intent(ProfileActivity.this, FavoriteActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -113,7 +107,6 @@ public class ProfileActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
         });
 
-        // 4. Tài khoản (Đang ở đây rồi thì không làm gì hoặc reload)
         navAccount.setOnClickListener(v -> {
             // Không làm gì vì đang ở trang này
         });
@@ -153,7 +146,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Toast.makeText(ProfileActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
-                // Không auto logout khi lỗi mạng, chỉ báo lỗi thôi
             }
         });
     }
@@ -197,7 +189,6 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Ẩn các nút chức năng khi chưa login
         if(orderHistoryButton != null) orderHistoryButton.setVisibility(View.GONE);
         if(savedAddressesButton != null) savedAddressesButton.setVisibility(View.GONE);
         if(paymentMethodsButton != null) paymentMethodsButton.setVisibility(View.GONE);
@@ -217,7 +208,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Đã đăng xuất", Toast.LENGTH_SHORT).show();
 
-        // Reset về Home hoặc Login
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
