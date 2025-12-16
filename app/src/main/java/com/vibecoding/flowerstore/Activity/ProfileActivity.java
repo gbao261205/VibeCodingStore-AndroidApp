@@ -10,11 +10,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.vibecoding.flowerstore.Model.User;
 import com.vibecoding.flowerstore.R;
@@ -33,7 +36,9 @@ public class ProfileActivity extends AppCompatActivity {
     private MaterialButton orderHistoryButton, savedAddressesButton, paymentMethodsButton, helpSupportButton;
     private LinearLayout userInfoLayout;
     private LinearLayout navHome, navCategories, navFavorites, navAccount;
-    ImageView avatar;
+    private ImageView avatar;
+    private ProgressBar progressBar;
+    private ScrollView scrollView;
 
     private static User cachedUser;
 
@@ -45,10 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
         setupViews();
         setupNavigation();
 
-        avatar.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-            startActivity(intent);
-        });
+        // Listener cho avatar và user info layout đã được chuyển vào showLoggedInUI và showGuestUI
     }
 
     @Override
@@ -67,6 +69,8 @@ public class ProfileActivity extends AppCompatActivity {
         helpSupportButton = findViewById(R.id.help_support_button);
         userInfoLayout = findViewById(R.id.user_info_layout);
         avatar = findViewById(R.id.avatar);
+        progressBar = findViewById(R.id.profile_progress_bar);
+        scrollView = findViewById(R.id.scroll_view);
 
         navHome = findViewById(R.id.nav_home);
         navCategories = findViewById(R.id.nav_categories);
@@ -85,16 +89,21 @@ public class ProfileActivity extends AppCompatActivity {
         navCategories.setOnClickListener(v -> {
             Intent intent = new Intent(this, CategoriesActivity.class);
             startActivity(intent);
-            overridePendingTransition(0, 0); // Thêm cái này cho mượt
+            overridePendingTransition(0, 0);
+            finish();
         });
         navFavorites.setOnClickListener(v ->{
             Intent intent = new Intent(this, FavoriteActivity.class);
             startActivity(intent);
             overridePendingTransition(0, 0);
+            finish();
         });
     }
 
     private void checkLoginStatusAndFetchProfile() {
+        progressBar.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.GONE);
+
         SharedPreferences prefs = getSharedPreferences("MY_APP_PREFS", Context.MODE_PRIVATE);
         String token = prefs.getString("ACCESS_TOKEN", null);
 
@@ -140,6 +149,9 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void showLoggedInUI(User user) {
+        progressBar.setVisibility(View.GONE);
+        scrollView.setVisibility(View.VISIBLE);
+
         userName.setText(user.getFullName());
         if (user.getEmail() != null) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
@@ -149,6 +161,18 @@ public class ProfileActivity extends AppCompatActivity {
             }
         }
         userEmail.setVisibility(View.VISIBLE);
+
+        // Tải ảnh đại diện bằng Glide và bo tròn
+        if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
+            Glide.with(ProfileActivity.this)
+                    .load(user.getAvatar())
+                    .circleCrop() // Bo tròn ảnh
+                    .placeholder(R.drawable.placeholder_avatar) // Ảnh chờ
+                    .error(R.drawable.placeholder_avatar)       // Ảnh lỗi
+                    .into(avatar);
+        } else {
+            Glide.with(this).load(R.drawable.placeholder_avatar).circleCrop().into(avatar);
+        }
 
         orderHistoryButton.setVisibility(View.VISIBLE);
         savedAddressesButton.setVisibility(View.VISIBLE);
@@ -163,13 +187,26 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        logoutButton.setOnClickListener(v -> handleAuthenticationError());
+        logoutButton.setOnClickListener(v -> handleLogout());
     }
 
     private void showGuestUI() {
+        progressBar.setVisibility(View.GONE);
+        scrollView.setVisibility(View.VISIBLE);
+
         userName.setText("Xin hãy đăng nhập");
         userEmail.setText("Chào mừng đến với Flower Store");
         cachedUser = null;
+
+        // Reset avatar về ảnh mặc định
+        Glide.with(this).load(R.drawable.placeholder_avatar).circleCrop().into(avatar);
+
+        // Ẩn các nút không cần thiết
+        orderHistoryButton.setVisibility(View.GONE);
+        savedAddressesButton.setVisibility(View.GONE);
+        paymentMethodsButton.setVisibility(View.GONE);
+        helpSupportButton.setVisibility(View.GONE);
+        logoutButton.setVisibility(View.GONE);
 
         userInfoLayout.setClickable(true);
         userInfoLayout.setOnClickListener(v -> {
@@ -184,7 +221,21 @@ public class ProfileActivity extends AppCompatActivity {
         editor.remove("ACCESS_TOKEN");
         editor.apply();
 
+        // Xóa cache và cập nhật giao diện ngay lập tức
+        invalidateProfileCache();
         Toast.makeText(this, "Phiên đăng nhập đã hết hạn", Toast.LENGTH_SHORT).show();
+        showGuestUI();
+    }
+
+    private void handleLogout() {
+        SharedPreferences prefs = getSharedPreferences("MY_APP_PREFS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("ACCESS_TOKEN");
+        editor.apply();
+
+        // Xóa cache và cập nhật giao diện ngay lập tức
+        invalidateProfileCache();
+        Toast.makeText(this, "Đăng xuất thành công", Toast.LENGTH_SHORT).show();
         showGuestUI();
     }
 
