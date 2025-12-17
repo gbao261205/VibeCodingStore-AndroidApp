@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
+import com.vibecoding.flowerstore.Model.DataStore;
 import com.vibecoding.flowerstore.Model.User;
 import com.vibecoding.flowerstore.R;
 import com.vibecoding.flowerstore.Service.ApiService;
@@ -35,7 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
     private TextView userName, userEmail;
     private Button logoutButton;
-    private MaterialButton orderHistoryButton, savedAddressesButton, paymentMethodsButton, helpSupportButton;
+    private MaterialButton orderHistoryButton, savedAddressesButton, paymentMethodsButton, helpSupportButton, cartButton;
     private LinearLayout userInfoLayout;
     private LinearLayout navHome, navCategories, navFavorites, navAccount;
     private ImageView avatar;
@@ -54,7 +55,13 @@ public class ProfileActivity extends AppCompatActivity {
         setupViews();
         setupNavigation();
 
-        // Listener cho avatar và user info layout đã được chuyển vào showLoggedInUI và showGuestUI
+        // Xử lý click Avatar
+        if (avatar != null) {
+            avatar.setOnClickListener(v -> {
+                Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+                startActivity(intent);
+            });
+        }
     }
 
     @Override
@@ -71,6 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
         savedAddressesButton = findViewById(R.id.saved_addresses_button);
         paymentMethodsButton = findViewById(R.id.payment_methods_button);
         helpSupportButton = findViewById(R.id.help_support_button);
+        cartButton = findViewById(R.id.cart_button);
         userInfoLayout = findViewById(R.id.user_info_layout);
         avatar = findViewById(R.id.avatar);
         progressBar = findViewById(R.id.profile_progress_bar);
@@ -80,27 +88,45 @@ public class ProfileActivity extends AppCompatActivity {
         navCategories = findViewById(R.id.nav_categories);
         navFavorites = findViewById(R.id.nav_favorites);
         navAccount = findViewById(R.id.nav_account);
+
+        cartButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, CartActivity.class);
+            startActivity(intent);
+        });
     }
 
+    // --- ĐÂY LÀ PHẦN SỬA ĐỔI NAVIGATION ---
     private void setupNavigation() {
+        // 1. Về Trang Chủ: Cần finish() để xóa các trang cũ, tránh nặng máy
         navHome.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            // Cờ này giúp xóa sạch các trang đang mở đè lên Home
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
-            overridePendingTransition(0, 0);
+            overridePendingTransition(0, 0); // Tắt hiệu ứng
             finish();
         });
+
+        // 2. Sang Danh Mục: KHÔNG finish(), chỉ thêm cờ SingleTop
         navCategories.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CategoriesActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, CategoriesActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // Tránh mở 2 lần trang giống nhau
             startActivity(intent);
             overridePendingTransition(0, 0);
-            finish();
+            // KHÔNG gọi finish() -> Trang cũ sẽ nằm dưới, tạo cảm giác mượt hơn
         });
+
+        // 3. Sang Yêu Thích: KHÔNG finish()
         navFavorites.setOnClickListener(v ->{
-            Intent intent = new Intent(this, FavoriteActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, FavoriteActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
             overridePendingTransition(0, 0);
-            finish();
+        });
+
+        // 4. Tài khoản (Đang ở đây rồi thì không làm gì hoặc reload)
+        navAccount.setOnClickListener(v -> {
+            // Không làm gì vì đang ở trang này
         });
     }
 
@@ -178,11 +204,12 @@ public class ProfileActivity extends AppCompatActivity {
             Glide.with(this).load(R.drawable.placeholder_avatar).circleCrop().into(avatar);
         }
 
-        orderHistoryButton.setVisibility(View.VISIBLE);
-        savedAddressesButton.setVisibility(View.VISIBLE);
-        paymentMethodsButton.setVisibility(View.VISIBLE);
-        helpSupportButton.setVisibility(View.VISIBLE);
-        logoutButton.setVisibility(View.VISIBLE);
+        if(orderHistoryButton != null) orderHistoryButton.setVisibility(View.VISIBLE);
+        if(savedAddressesButton != null) savedAddressesButton.setVisibility(View.VISIBLE);
+        if(paymentMethodsButton != null) paymentMethodsButton.setVisibility(View.VISIBLE);
+        if(helpSupportButton != null) helpSupportButton.setVisibility(View.VISIBLE);
+        if(cartButton != null) cartButton.setVisibility(View.VISIBLE);
+        if(logoutButton != null) logoutButton.setVisibility(View.VISIBLE);
 
         userInfoLayout.setClickable(true);
         userInfoLayout.setOnClickListener(v -> {

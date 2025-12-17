@@ -9,6 +9,8 @@ import androidx.viewpager2.widget.CompositePageTransformer;
 import androidx.viewpager2.widget.MarginPageTransformer;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -199,16 +201,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerCategories.setAdapter(categoryAdapter);
     }
 
-    // --- CẬP NHẬT: THÊM LOGIC CACHING CHO CATEGORIES ---
     private void fetchCategoriesFromApi() {
-        // 1. Kiểm tra cache
         if (DataStore.cachedCategories != null && !DataStore.cachedCategories.isEmpty()) {
             categoryAdapter.updateData(DataStore.cachedCategories);
             Log.d(TAG, "Dùng Cache: Categories");
             return;
         }
 
-        // 2. Gọi API nếu chưa có cache
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         Call<List<Category>> call = apiService.getCategories();
 
@@ -218,7 +217,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (response.isSuccessful() && response.body() != null) {
                     List<Category> categories = response.body();
                     if (!categories.isEmpty()) {
-                        // 3. Lưu vào cache
                         DataStore.cachedCategories = categories;
                         categoryAdapter.updateData(categories);
                     }
@@ -234,16 +232,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    // --- CẬP NHẬT: THÊM LOGIC CACHING CHO PRODUCTS ---
     private void fetchProductsFromApi() {
-        // 1. Kiểm tra cache
         if (DataStore.cachedProducts != null && !DataStore.cachedProducts.isEmpty()) {
             productAdapter.updateData(DataStore.cachedProducts);
             Log.d(TAG, "Dùng Cache: Products");
             return;
         }
 
-        // 2. Gọi API nếu chưa có cache
         ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
         String query = "";
         String page = "";
@@ -258,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (response.isSuccessful() && response.body() != null) {
                     List<Product> bestsellingProducts = response.body().getProducts();
                     if (bestsellingProducts != null) {
-                        // 3. Lưu vào cache
                         DataStore.cachedProducts = bestsellingProducts;
                         productAdapter.updateData(bestsellingProducts);
                     }
@@ -280,9 +274,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int id = v.getId();
         Intent intent = null;
 
+        // --- XỬ LÝ RIÊNG CHO NÚT GIỎ HÀNG ---
+        if (id == R.id.button_cart) {
+            SharedPreferences prefs = getSharedPreferences("MY_APP_PREFS", Context.MODE_PRIVATE);
+            String token = prefs.getString("ACCESS_TOKEN", null);
+
+            if (token == null) {
+                Toast.makeText(this, "Vui lòng đăng nhập để xem giỏ hàng", Toast.LENGTH_SHORT).show();
+            } else {
+                intent = new Intent(this, CartActivity.class);
+                startActivity(intent); // Chuyển trang bình thường, không finish()
+            }
+            return; // Kết thúc sớm để không chạy code finish() bên dưới
+        }
+
+        // --- XỬ LÝ CHO THANH ĐIỀU HƯỚNG BÊN DƯỚI ---
         if (id == R.id.nav_home) {
-            // Đang ở Home thì không làm gì
-            return;
+            return; // Đang ở Home, không làm gì
         }
         else if (id == R.id.nav_categories) {
             intent = new Intent(this, CategoriesActivity.class);
@@ -297,19 +305,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent = new Intent(this, CartActivity.class);
         }
 
-        // --- KHỐI LỆNH CHUYỂN TRANG KHÔNG HIỆU ỨNG (TAB STYLE) ---
         if (intent != null) {
             startActivity(intent);
-            // 1. Tắt hiệu ứng hiện lên của trang mới
-            overridePendingTransition(0, 0);
-
-            // 2. Nếu bạn muốn Home là gốc (không bao giờ finish) thì bỏ dòng này.
-            // Nhưng để mượt nhất và tiết kiệm RAM, ta nên finish() khi sang tab khác
-            // để tránh chồng Activity. Tuy nhiên, nếu user bấm Back ở trang kia sẽ thoát App.
-            // ==> Giải pháp tốt nhất cho TAB là cứ finish() để chuyển qua lại như Switch.
-            finish();
-
-            // 3. Tắt hiệu ứng biến mất của trang cũ
             overridePendingTransition(0, 0);
         }
     }
