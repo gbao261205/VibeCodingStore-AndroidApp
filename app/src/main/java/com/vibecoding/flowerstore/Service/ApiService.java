@@ -3,6 +3,7 @@ package com.vibecoding.flowerstore.Service;
 import com.vibecoding.flowerstore.Model.ApiResponse;
 import com.vibecoding.flowerstore.Model.CartDTO;
 import com.vibecoding.flowerstore.Model.Category;
+import com.vibecoding.flowerstore.Model.OrderDTO;
 import com.vibecoding.flowerstore.Model.User;
 
 import java.util.List;
@@ -45,7 +46,7 @@ public interface ApiService {
     @GET("products/category/{categorySlug}")
     Call<ApiResponse> getProductsByCategory(@Path("categorySlug") String slug);
 
-//    // ================== 1. AUTHENTICATION ==================
+    // ================== 1. AUTHENTICATION ==================
     @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);
 
@@ -144,8 +145,11 @@ public interface ApiService {
 //    @POST("orders/place-order")
 //    Call<PlaceOrderResponse> placeOrder(@Body PlaceOrderRequest request);
 //
-//    @GET("orders/history")
-//    Call<List<OrderDTO>> getOrderHistory(@Query("status") String status);
+    @GET("orders/history")
+    Call<List<OrderDTO>> getOrderHistory(
+            @Header("Authorization") String authToken,
+            @Query("status") String status
+    );
 //
 //    // ================== 5. ADDRESSES ==================
 //    @GET("addresses")

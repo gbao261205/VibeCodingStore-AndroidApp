@@ -93,6 +93,11 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(ProfileActivity.this, CartActivity.class);
             startActivity(intent);
         });
+
+        orderHistoryButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, OrderHistoryActivity.class);
+            startActivity(intent);
+        });
     }
 
     // --- ĐÂY LÀ PHẦN SỬA ĐỔI NAVIGATION ---
