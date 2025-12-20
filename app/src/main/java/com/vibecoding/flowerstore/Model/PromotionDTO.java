@@ -1,9 +1,10 @@
 package com.vibecoding.flowerstore.Model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 // 2. PromotionDTO
-public class PromotionDTO {
+public class PromotionDTO implements Serializable {
     private Integer id;
     private String code;
     private String description;

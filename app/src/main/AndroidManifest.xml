@@ -18,9 +18,11 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:fullBackupContent">
         <activity
-            android:name=".Activity.EditProfileActivity"
+            android:name=".Activity.OrderDetailActivity"
             android:exported="false" />
-        <!-- 1. Đặt IntroActivity làm màn hình khởi chạy -->
+        <activity
+            android:name=".Activity.EditProfileActivity"
+            android:exported="false" /> <!-- 1. Đặt IntroActivity làm màn hình khởi chạy -->
         <activity
             android:name=".Activity.IntroActivity"
             android:exported="true">

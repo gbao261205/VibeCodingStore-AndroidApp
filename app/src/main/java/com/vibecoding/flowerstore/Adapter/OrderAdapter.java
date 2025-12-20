@@ -1,6 +1,7 @@
 package com.vibecoding.flowerstore.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.vibecoding.flowerstore.Activity.OrderDetailActivity;
 import com.vibecoding.flowerstore.Model.OrderDTO;
 import com.vibecoding.flowerstore.Model.OrderDetailDTO;
 import com.vibecoding.flowerstore.R;
@@ -74,6 +76,12 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderViewHol
                         .into(holder.imgProduct);
             }
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, OrderDetailActivity.class);
+            intent.putExtra("ORDER_DATA", order); // Truyền object sang màn hình mới
+            context.startActivity(intent);
+        });
     }
 
     private void updateStatusView(TextView tv, String status) {

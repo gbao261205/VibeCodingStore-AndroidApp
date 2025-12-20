@@ -1,6 +1,8 @@
 package com.vibecoding.flowerstore.Model;
 
-public class UserDTO {
+import java.io.Serializable;
+
+public class UserDTO implements Serializable {
     private Integer id;
     private String username;
     private String email;
@@ -40,8 +42,8 @@ public class UserDTO {
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }
 
-// RoleDTO Class (có thể để chung file hoặc tách riêng)
-class RoleDTO {
+// RoleDTO Class
+class RoleDTO implements Serializable {
     private Integer id;
     private String name;
 

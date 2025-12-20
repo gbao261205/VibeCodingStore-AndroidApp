@@ -1,9 +1,10 @@
 package com.vibecoding.flowerstore.Model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 // 1. ShippingCarrierDTO
-public class ShippingCarrierDTO {
+public class ShippingCarrierDTO implements Serializable {
     private Long id;
     private String name;
     private String phone;

@@ -1,8 +1,9 @@
 package com.vibecoding.flowerstore.Model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class ProductDTO {
+public class ProductDTO implements Serializable {
     private Integer id;
     private String name;
     private String imageUrl; // <-- Trường ảnh nằm ở đây

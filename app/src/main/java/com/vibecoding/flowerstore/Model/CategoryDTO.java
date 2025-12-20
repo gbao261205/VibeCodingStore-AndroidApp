@@ -1,7 +1,9 @@
 package com.vibecoding.flowerstore.Model;
 
+import java.io.Serializable;
+
 // 4. CategoryDTO
-public class CategoryDTO {
+public class CategoryDTO implements Serializable {
     private Integer id;
     private String name;
     private String slug;

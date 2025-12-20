@@ -1,8 +1,9 @@
 package com.vibecoding.flowerstore.Model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderDetailDTO {
+public class OrderDetailDTO implements Serializable {
     private Long id;
     private ProductDTO product;
     private Integer quantity;

@@ -13,6 +13,10 @@
 
     </style>
 
+    <style name="RoundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item> </style>
+
     <style name="ProfileButtonStyle" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

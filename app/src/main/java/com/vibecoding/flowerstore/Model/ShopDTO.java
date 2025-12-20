@@ -1,7 +1,9 @@
 package com.vibecoding.flowerstore.Model;
 
+import java.io.Serializable;
+
 // 3. ShopDTO
-public class ShopDTO {
+public class ShopDTO implements Serializable {
     private Integer id;
     private String name;
     private boolean active;

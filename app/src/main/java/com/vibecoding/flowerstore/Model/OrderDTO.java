@@ -1,10 +1,11 @@
 package com.vibecoding.flowerstore.Model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime; // Hoặc dùng String nếu không cấu hình Gson Adapter
 import java.util.List;
 
-public class OrderDTO {
+public class OrderDTO implements Serializable {
     private Integer id;
     private UserDTO user;
     private String shippingAddress;
