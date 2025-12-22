@@ -18,6 +18,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:fullBackupContent">
         <activity
+            android:name=".Activity.EditAddressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.AddAddressActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.AddressActivity"
             android:exported="false" />
         <activity

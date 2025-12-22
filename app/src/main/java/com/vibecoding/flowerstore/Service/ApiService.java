@@ -159,11 +159,11 @@ public interface ApiService {
 //    @GET("addresses/{id}")
 //    Call<AddressDTO> getAddressById(@Path("id") int id);
 //
-//    @POST("addresses")
-//    Call<MessageResponse> createAddress(@Body AddressRequest request);
-//
-//    @PUT("addresses/{id}")
-//    Call<MessageResponse> updateAddress(@Path("id") int id, @Body AddressRequest request);
+    @POST("addresses")
+    Call<MessageResponse> createAddress(@Body AddressDTO request);
+
+    @PUT("addresses/{id}")
+    Call<MessageResponse> updateAddress(@Path("id") int id, @Body AddressDTO request);
 //
 //    @DELETE("addresses/{id}")
 //    Call<MessageResponse> deleteAddress(@Path("id") int id);

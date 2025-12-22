@@ -95,7 +95,8 @@
             app:iconGravity="textStart"
             app:iconTint="@color/white"
             android:layout_gravity="center_horizontal"
-            android:elevation="4dp"/>
+            android:elevation="4dp"
+            android:visibility="gone"/>
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

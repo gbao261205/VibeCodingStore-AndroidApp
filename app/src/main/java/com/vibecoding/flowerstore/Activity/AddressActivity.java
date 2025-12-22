@@ -1,5 +1,7 @@
 package com.vibecoding.flowerstore.Activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,6 +41,17 @@ public class AddressActivity extends AppCompatActivity {
     private String userToken;
     private ProgressBar progressBar;
 
+    // Launcher cho việc thêm hoặc sửa địa chỉ
+    private final ActivityResultLauncher<Intent> addressResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // Chỉ load lại dữ liệu nếu màn hình con trả về RESULT_OK
+                    fetchAddresses();
+                }
+            }
+    );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +65,7 @@ public class AddressActivity extends AppCompatActivity {
         // Lấy token và gọi API
         if (checkLogin()) {
             apiService = RetrofitClient.getClient(this).create(ApiService.class);
+            // Load lần đầu tiên
             fetchAddresses();
         }
 
@@ -70,14 +86,18 @@ public class AddressActivity extends AppCompatActivity {
         addressAdapter = new AddressAdapter(this, new ArrayList<>(), new AddressAdapter.OnAddressActionListener() {
             @Override
             public void onEdit(AddressDTO address) {
-                Toast.makeText(AddressActivity.this, "Sửa địa chỉ ID: " + address.getId(), Toast.LENGTH_SHORT).show();
-                // TODO: Chuyển sang màn hình EditAddressActivity và truyền address sang
+                // Chuyển sang màn hình EditAddressActivity và truyền address sang
+                Intent intent = new Intent(AddressActivity.this, EditAddressActivity.class);
+                intent.putExtra("address_data", address);
+                // Sử dụng launcher để bắt kết quả trả về
+                addressResultLauncher.launch(intent);
             }
 
             @Override
             public void onDelete(AddressDTO address) {
                 Toast.makeText(AddressActivity.this, "Xóa địa chỉ ID: " + address.getId(), Toast.LENGTH_SHORT).show();
                 // TODO: Gọi API xóa địa chỉ
+                // Sau khi xóa xong cũng nên gọi fetchAddresses()
             }
         });
 
@@ -105,10 +125,11 @@ public class AddressActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<AddressDTO>>() {
             @Override
             public void onResponse(Call<List<AddressDTO>> call, Response<List<AddressDTO>> response) {
+                progressBar.setVisibility((View.GONE));
+                btnAddAddress.setVisibility((View.VISIBLE));
                 if (response.isSuccessful() && response.body() != null) {
                     List<AddressDTO> addresses = response.body();
                     addressAdapter.setAddressList(addresses);
-                    progressBar.setVisibility((View.GONE));
                     if (addresses.isEmpty()) {
                         Toast.makeText(AddressActivity.this, "Bạn chưa lưu địa chỉ nào", Toast.LENGTH_SHORT).show();
                     }
@@ -119,6 +140,7 @@ public class AddressActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<AddressDTO>> call, Throwable t) {
+                progressBar.setVisibility((View.GONE));
                 Toast.makeText(AddressActivity.this, "Lỗi kết nối: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -128,17 +150,9 @@ public class AddressActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         btnAddAddress.setOnClickListener(v -> {
-            Toast.makeText(this, "Chức năng thêm địa chỉ", Toast.LENGTH_SHORT).show();
-            // TODO: Intent to AddAddressActivity
+            Intent intent = new Intent(this, AddAddressActivity.class);
+            // Sử dụng launcher để bắt kết quả trả về
+            addressResultLauncher.launch(intent);
         });
-    }
-
-    // Refresh lại danh sách khi quay lại từ màn hình Thêm/Sửa (nếu có)
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (apiService != null && userToken != null) {
-            fetchAddresses();
-        }
     }
 }

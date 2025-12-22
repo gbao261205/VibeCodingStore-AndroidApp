@@ -36,4 +36,21 @@ public class AddressDTO implements Serializable {
     public String getFullAddress() {
         return detailAddress + ", " + city;
     }
+
+    public AddressDTO(Integer id, String recipientName, String phoneNumber, String detailAddress, String city, boolean isDefault) {
+        this.id = id;
+        this.recipientName = recipientName;
+        this.phoneNumber = phoneNumber;
+        this.detailAddress = detailAddress;
+        this.city = city;
+        this.isDefault = isDefault;
+    }
+
+    public AddressDTO(String recipientName, String phoneNumber, String detailAddress, String city, boolean isDefault) {
+        this.recipientName = recipientName;
+        this.phoneNumber = phoneNumber;
+        this.detailAddress = detailAddress;
+        this.city = city;
+        this.isDefault = isDefault;
+    }
 }
