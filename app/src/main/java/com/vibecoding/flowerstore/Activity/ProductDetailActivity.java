@@ -1,5 +1,8 @@
 package com.vibecoding.flowerstore.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -12,12 +15,19 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.vibecoding.flowerstore.Model.CartDTO;
 import com.vibecoding.flowerstore.Model.DataStore;
 import com.vibecoding.flowerstore.Model.Product;
 import com.vibecoding.flowerstore.R;
+import com.vibecoding.flowerstore.Service.ApiService;
+import com.vibecoding.flowerstore.Service.RetrofitClient;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProductDetailActivity extends AppCompatActivity {
 
@@ -145,15 +155,49 @@ public class ProductDetailActivity extends AppCompatActivity {
 
         // Tăng số lượng
         btnIncrease.setOnClickListener(v -> {
-            // Có thể check tồn kho ở đây nếu muốn
-            quantity++;
-            tvQuantity.setText(String.valueOf(quantity));
+            if (currentProduct != null && quantity < currentProduct.getStock()) {
+                quantity++;
+                tvQuantity.setText(String.valueOf(quantity));
+            } else {
+                Toast.makeText(this, "Số lượng đã đạt giới hạn kho", Toast.LENGTH_SHORT).show();
+            }
         });
 
         // Thêm vào giỏ
         btnAddToCart.setOnClickListener(v -> {
-            // TODO: Xử lý logic thêm vào giỏ hàng (Cart DataStore hoặc API)
-            Toast.makeText(this, "Đã thêm " + quantity + " sản phẩm vào giỏ!", Toast.LENGTH_SHORT).show();
+            SharedPreferences prefs = getSharedPreferences("MY_APP_PREFS", Context.MODE_PRIVATE);
+            String token = prefs.getString("ACCESS_TOKEN", null);
+
+            if (token != null) {
+                addToCart("Bearer " + token);
+            } else {
+                Toast.makeText(this, "Vui lòng đăng nhập để thêm vào giỏ hàng", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ProductDetailActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void addToCart(String authToken) {
+        if (currentProduct == null) return;
+
+        ApiService apiService = RetrofitClient.getClient(this).create(ApiService.class);
+        Call<CartDTO> call = apiService.addToCart(authToken, currentProduct.getId(), quantity);
+
+        call.enqueue(new Callback<CartDTO>() {
+            @Override
+            public void onResponse(Call<CartDTO> call, Response<CartDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(ProductDetailActivity.this, "Đã thêm vào giỏ hàng thành công!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProductDetailActivity.this, "Lỗi thêm giỏ hàng: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CartDTO> call, Throwable t) {
+                Toast.makeText(ProductDetailActivity.this, "Lỗi kết nối mạng", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
