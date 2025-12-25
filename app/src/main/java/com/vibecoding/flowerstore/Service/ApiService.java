@@ -143,11 +143,11 @@ public interface ApiService {
     );
 
 //    // ================== 4. ORDERS ==================
-//    @GET("orders/checkout-details")
-//    Call<CheckoutDetailsResponse> getCheckoutDetails();
-//
-//    @POST("orders/place-order")
-//    Call<PlaceOrderResponse> placeOrder(@Body PlaceOrderRequest request);
+    @GET("orders/checkout-details")
+    Call<CheckoutDetailsResponse> getCheckoutDetails(@Header("Authorization") String authToken);
+
+    @POST("orders/place-order")
+    Call<PlaceOrderResponse> placeOrder(@Header("Authorization") String authToken, @Body PlaceOrderRequest request);
 //
     @GET("orders/history")
     Call<List<OrderDTO>> getOrderHistory(
