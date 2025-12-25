@@ -225,12 +225,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // --- SETUP UI KHÁC ---
     private void setupRecyclerView() {
+        // --- SETUP SẢN PHẨM (GIỮ NGUYÊN) ---
         productAdapter = new ProductAdapter(new ArrayList<>(), this);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerProducts.setLayoutManager(layoutManager);
         recyclerProducts.setAdapter(productAdapter);
 
-        categoryAdapter = new CategoryAdapter(new ArrayList<>(), this);
+        // --- SETUP DANH MỤC (SỬA LẠI ĐỂ BẮT SỰ KIỆN CLICK) ---
+        // Truyền thêm lambda function (implement interface OnCategoryClickListener)
+        categoryAdapter = new CategoryAdapter(new ArrayList<>(), this, new CategoryAdapter.OnCategoryClickListener() {
+            @Override
+            public void onCategoryClick(Category category) {
+                // Xử lý khi click vào 1 danh mục
+                Intent intent = new Intent(MainActivity.this, CategoryProductsActivity.class);
+
+                // Truyền dữ liệu sang Activity mới
+                // Lưu ý: Đảm bảo Model Category của bạn có hàm getSlug() và getName()
+                intent.putExtra("category_slug", category.getSlug());
+                intent.putExtra("category_name", category.getName());
+
+                startActivity(intent);
+            }
+        });
+
         LinearLayoutManager categoryLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerCategories.setLayoutManager(categoryLayoutManager);
         recyclerCategories.setAdapter(categoryAdapter);
@@ -244,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cartButton.setOnClickListener(this);
     }
 
+    // --- XỬ LÝ SỰ KIỆN CLICK VÀ CHỐNG NHẤP NHÁY (BLINKING) ---
     @Override
     public void onClick(View v) {
         int id = v.getId();
