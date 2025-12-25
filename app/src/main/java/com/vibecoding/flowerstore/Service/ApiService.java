@@ -38,8 +38,8 @@ public interface ApiService {
     @GET("products")
     Call<ApiResponse> getProducts(
             @Query("query") String query,
-            @Query("page") String page,  // Dùng String để có thể truyền rỗng
-            @Query("size") String size,  // Dùng String để có thể truyền rỗng
+            @Query("page") int page,  // Dùng String để có thể truyền rỗng
+            @Query("size") int size,  // Dùng String để có thể truyền rỗng
             @Query("sort") String sortBy
     );
     @GET("categories")
