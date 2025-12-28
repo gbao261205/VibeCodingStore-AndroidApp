@@ -110,7 +110,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    // --- ĐÂY LÀ PHẦN SỬA ĐỔI NAVIGATION ---
     private void setupNavigation() {
         // 1. Về Trang Chủ: Cần finish() để xóa các trang cũ, tránh nặng máy
         navHome.setOnClickListener(v -> {
@@ -261,6 +260,11 @@ public class ProfileActivity extends AppCompatActivity {
         userInfoLayout.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
             intent.putExtra("user", cachedUser);
+            startActivity(intent);
+        });
+
+        helpSupportButton.setOnClickListener(v->{
+            Intent intent = new Intent(ProfileActivity.this, SupportActivity.class);
             startActivity(intent);
         });
 
