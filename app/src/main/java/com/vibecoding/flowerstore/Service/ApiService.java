@@ -212,9 +212,9 @@ public interface ApiService {
 //    );
 //
 //    // ================== 10. ADMIN ==================
-//    @GET("admin/dashboard")
-//    Call<AdminDashboardResponse> getAdminDashboard();
-//
+    @GET("admin/dashboard")
+    Call<AdminDashboardResponse> getAdminDashboard();
+
 //    @GET("admin/orders")
 //    Call<List<OrderDTO>> getAllOrders();
 //

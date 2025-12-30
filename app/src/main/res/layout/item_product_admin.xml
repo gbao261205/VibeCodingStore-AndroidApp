@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/img_flower_placeholder"
+                android:src="@drawable/placeholder_product"
                 android:background="#EEE"/>
         </androidx.cardview.widget.CardView>
 
@@ -54,7 +54,7 @@
             android:id="@+id/btnMore"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_more_vert"
+            android:src="@drawable/ic_more_horiz"
             app:tint="@color/text_hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>

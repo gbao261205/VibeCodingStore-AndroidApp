@@ -48,10 +48,6 @@
     <color name="blue_bg">#DBEAFE</color>
     <color name="neutral_gray">#4B5563</color>
     <color name="neutral_bg">#F3F4F6</color>
-    <color name="error_red">#991B1B</color>
-    <color name="error_bg">#FEE2E2</color>
-    <color name="warning_yellow">#B45309</color>
-    <color name="warning_bg">#FEF3C7</color>
     <color name="text_sub">#756388</color>
     <color name="avatar_purple_bg">#F3E8FF</color>
     <color name="avatar_purple_text">#7E22CE</color>

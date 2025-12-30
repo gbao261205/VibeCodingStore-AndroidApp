@@ -46,10 +46,12 @@
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingBottom="80dp"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -58,44 +60,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp">
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:text="Hôm nay"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:background="@drawable/bg_chip_outline"
-                        android:textColor="@color/text_body"
-                        android:layout_marginEnd="8dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:text="Tuần này"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:background="@drawable/bg_chip_selected_pink"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:layout_marginEnd="8dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:text="Tháng này"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:background="@drawable/bg_chip_outline"
-                        android:textColor="@color/text_body"/>
-                </LinearLayout>
-            </HorizontalScrollView>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -148,6 +112,7 @@
                         android:textColor="@color/text_body"
                         android:layout_marginTop="12dp"/>
                     <TextView
+                        android:id="@+id/tvTotalRevenue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="150tr"
@@ -200,6 +165,7 @@
                         android:textColor="@color/text_body"
                         android:layout_marginTop="12dp"/>
                     <TextView
+                        android:id="@+id/tvTotalOrders"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="1,240"
@@ -278,8 +244,8 @@
                     android:padding="12dp"
                     android:layout_marginEnd="8dp">
                     <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_hourglass" app:tint="@color/warning_yellow"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="12" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/warning_yellow" android:layout_marginTop="4dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chờ xử lý" android:textSize="10sp" android:textColor="@color/warning_yellow"/>
+                    <TextView android:id="@+id/tvPendingShopRequests" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="12" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/warning_yellow" android:layout_marginTop="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Đăng ký Shop" android:textSize="10sp" android:textColor="@color/warning_yellow"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -293,8 +259,8 @@
                     android:padding="12dp"
                     android:layout_marginEnd="8dp">
                     <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_check" app:tint="@color/success_green"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1,180" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/success_green" android:layout_marginTop="4dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hoàn thành" android:textSize="10sp" android:textColor="@color/success_green"/>
+                    <TextView android:id="@+id/tvActiveShops" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="1,180" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/success_green" android:layout_marginTop="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Shop hoạt động" android:textSize="10sp" android:textColor="@color/success_green"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -307,8 +273,8 @@
                     android:gravity="center"
                     android:padding="12dp">
                     <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_cancel" app:tint="@color/error_red"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="48" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/error_red" android:layout_marginTop="4dp"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Đã hủy" android:textSize="10sp" android:textColor="@color/error_red"/>
+                    <TextView android:id="@+id/tvPendingAppeals" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="48" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/error_red" android:layout_marginTop="4dp"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Khiếu nại" android:textSize="10sp" android:textColor="@color/error_red"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -339,10 +305,10 @@
                     android:background="@drawable/bg_chip_selected_pink"
                     android:backgroundTint="@color/primary_pink_light"/>
                 <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cửa hàng hoạt động" android:textStyle="bold" android:textColor="@color/text_title"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Chi nhánh trực tuyến" android:textSize="12sp" android:textColor="@color/text_body"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tổng số cửa hàng" android:textStyle="bold" android:textColor="@color/text_title"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Đã đăng ký trên hệ thống" android:textSize="12sp" android:textColor="@color/text_body"/>
                 </LinearLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" android:textStyle="bold" android:textSize="18sp" android:textColor="@color/text_title"/>
+                <TextView android:id="@+id/tvTotalShops" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="5" android:textStyle="bold" android:textSize="18sp" android:textColor="@color/text_title"/>
             </LinearLayout>
 
             <LinearLayout
@@ -361,14 +327,24 @@
                     android:background="@drawable/bg_chip_selected_pink"
                     android:backgroundTint="@color/blue_bg"/>
                 <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:layout_marginStart="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Người dùng hoạt động" android:textStyle="bold" android:textColor="@color/text_title"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Khách hàng thường xuyên" android:textSize="12sp" android:textColor="@color/text_body"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tổng người dùng" android:textStyle="bold" android:textColor="@color/text_title"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tài khoản đã đăng ký" android:textSize="12sp" android:textColor="@color/text_body"/>
                 </LinearLayout>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3,500" android:textStyle="bold" android:textSize="18sp" android:textColor="@color/text_title"/>
+                <TextView android:id="@+id/tvTotalUsers" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="3,500" android:textStyle="bold" android:textSize="18sp" android:textColor="@color/text_title"/>
             </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible" />
 
     <LinearLayout
         android:layout_width="match_parent"
