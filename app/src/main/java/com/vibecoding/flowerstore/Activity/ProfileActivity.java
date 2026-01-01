@@ -249,6 +249,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (btnAdmin != null && user.getRole() != null && "admin".equalsIgnoreCase(user.getRole().getName())) {
             btnAdmin.setVisibility(View.VISIBLE);
+            shopButton.setVisibility(View.GONE);
             btnAdmin.setOnClickListener(v -> {
                 Intent intent = new Intent(ProfileActivity.this, AdminDashboardActivity.class);
                 startActivity(intent);
