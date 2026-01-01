@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/background_light">
 
     <LinearLayout
@@ -78,6 +79,7 @@
                         app:tint="@color/text_sub"/>
 
                     <EditText
+                        android:id="@+id/etSearch"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
@@ -104,9 +106,10 @@
                     android:paddingHorizontal="16dp">
 
                     <TextView
+                        android:id="@+id/chipAll"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
-                        android:text="Tất cả (124)"
+                        android:text="Tất cả"
                         android:gravity="center"
                         android:paddingHorizontal="16dp"
                         android:background="@drawable/bg_chip_selected_pink"
@@ -116,9 +119,10 @@
                         android:layout_marginEnd="8dp"/>
 
                     <TextView
+                        android:id="@+id/chipActive"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
-                        android:text="Hoạt động (110)"
+                        android:text="Hoạt động"
                         android:gravity="center"
                         android:paddingHorizontal="16dp"
                         android:background="@drawable/bg_chip_unselected"
@@ -128,9 +132,10 @@
                         android:layout_marginEnd="8dp"/>
 
                     <TextView
+                        android:id="@+id/chipLocked"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
-                        android:text="Đã khóa (14)"
+                        android:text="Đã khóa"
                         android:gravity="center"
                         android:paddingHorizontal="16dp"
                         android:background="@drawable/bg_chip_unselected"
@@ -138,24 +143,13 @@
                         android:textStyle="bold"
                         android:textSize="14sp"
                         android:layout_marginEnd="8dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="36dp"
-                        android:text="Mới đăng ký"
-                        android:gravity="center"
-                        android:paddingHorizontal="16dp"
-                        android:background="@drawable/bg_chip_unselected"
-                        android:textColor="@color/text_sub"
-                        android:textStyle="bold"
-                        android:textSize="14sp"/>
                 </LinearLayout>
             </HorizontalScrollView>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MỚI CẬP NHẬT"
+                android:text="DANH SÁCH NGƯỜI DÙNG"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_sub"
@@ -173,6 +167,7 @@
                 tools:listitem="@layout/item_user_admin" />
 
             <ProgressBar
+                android:id="@+id/progressBar"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
@@ -193,7 +188,7 @@
         app:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="Add User"/>
-
+        android:contentDescription="Add User"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

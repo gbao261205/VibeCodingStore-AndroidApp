@@ -8,6 +8,7 @@ import com.vibecoding.flowerstore.Model.OrderDTO;
 import com.vibecoding.flowerstore.Model.ProductDTO;
 import com.vibecoding.flowerstore.Model.ShopDTO;
 import com.vibecoding.flowerstore.Model.User;
+import com.vibecoding.flowerstore.Model.UserDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -220,11 +221,11 @@ public interface ApiService {
     Call<List<OrderDTO>> getAllOrders(@Header("Authorization") String authToken);
 
     @GET("admin/products")
-    Call<List<ProductDTO>> getAllProducts(@Query("keyword") String keyword); //Keyword là optional
+    Call<List<ProductDTO>> getAllProducts(@Query("keyword") String keyword);
 
     @GET("admin/shops")
     Call<List<ShopDTO>> getAllShop(@Header("Authorization") String authToken, @Query("keyword") String keyword);
 
     @GET("admin/users")
-    Call<List<User>> getAllUsers(@Header("Authorization") String authToken, @Query("keyword") String keyword);
+    Call<List<UserDTO>> getAllUsers(@Header("Authorization") String authToken);
 }
