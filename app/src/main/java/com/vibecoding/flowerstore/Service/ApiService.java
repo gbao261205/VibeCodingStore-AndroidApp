@@ -215,11 +215,11 @@ public interface ApiService {
     @GET("admin/dashboard")
     Call<AdminDashboardResponse> getAdminDashboard();
 
-//    @GET("admin/orders")
-//    Call<List<OrderDTO>> getAllOrders();
-//
-//    @GET("admin/products")
-//    Call<List<ProductDTO>> getAllProducts(@Query("keyword") String keyword);
+    @GET("admin/orders")
+    Call<List<OrderDTO>> getAllOrders(@Header("Authorization") String authToken);
+
+    @GET("admin/products")
+    Call<List<ProductDTO>> getAllProducts(@Query("keyword") String keyword);
 //
 //    @POST("admin/products/toggle-visibility/{id}")
 //    Call<MessageResponse> toggleProductVisibility(@Path("id") int id);

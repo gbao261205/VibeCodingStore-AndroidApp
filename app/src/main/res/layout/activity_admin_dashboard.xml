@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="5dp"
                 android:baselineAligned="false">
 
                 <LinearLayout
@@ -355,17 +355,34 @@
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+        <LinearLayout
+            android:id="@+id/dashboardButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_dashboard" app:tint="@color/primary_pink"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/primary_pink" android:textStyle="bold" android:text="Tổng quan"/>
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+        <LinearLayout
+            android:id="@+id/orderButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_receipt" app:tint="@color/text_hint"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="10sp" android:textColor="@color/text_hint" android:text="Đơn hàng"/>
         </LinearLayout>
 
-        <FrameLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:clipChildren="false">
+        <FrameLayout
+            android:id="@+id/logoButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clipChildren="false">
             <androidx.cardview.widget.CardView
                 android:layout_width="56dp"
                 android:layout_height="56dp"
@@ -378,12 +395,24 @@
             </androidx.cardview.widget.CardView>
         </FrameLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+        <LinearLayout
+            android:id="@+id/productButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_local_florist" app:tint="@color/text_hint"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sản phẩm" android:textSize="10sp" android:textColor="@color/text_hint"/>
         </LinearLayout>
 
-        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:orientation="vertical" android:gravity="center">
+        <LinearLayout
+            android:id="@+id/shopButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
             <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_shopping_bag" app:tint="@color/text_hint"/>
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cửa hàng" android:textSize="10sp" android:textColor="@color/text_hint"/>
         </LinearLayout>

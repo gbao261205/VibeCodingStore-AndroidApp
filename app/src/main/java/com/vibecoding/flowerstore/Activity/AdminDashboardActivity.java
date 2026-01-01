@@ -1,10 +1,13 @@
 package com.vibecoding.flowerstore.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +33,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private ImageView btnBack;
     private ProgressBar progressBar;
     private NestedScrollView scrollView;
+    private LinearLayout orderButton, dashboardButton, productButton, shopButton;
+    private FrameLayout logoButton;
+
+    // Cache static để lưu dữ liệu trong bộ nhớ
+    private static AdminDashboardResponse cachedData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +61,62 @@ public class AdminDashboardActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         progressBar = findViewById(R.id.progressBar);
         scrollView = findViewById(R.id.scrollView);
+        orderButton = findViewById(R.id.orderButton);
+        dashboardButton = findViewById(R.id.dashboardButton);
+        productButton = findViewById(R.id.productButton);
+        shopButton = findViewById(R.id.shopButton);
+        logoButton = findViewById(R.id.logoButton);
 
-        btnBack.setOnClickListener(v -> finish());
+
+        btnBack.setOnClickListener(v -> {
+            cachedData = null; // Xóa cache khi thoát
+            finish();
+        });
+
+        orderButton.setOnClickListener(v -> {
+            // Không xóa cache khi chuyển sang tab khác trong Admin
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminOrderManagementActivity.class);
+            startActivity(intent);
+            // Có thể finish() hoặc không tùy logic navigation, ở đây code cũ finish() thì giữ nguyên.
+            // Nếu finish() thì Activity này bị hủy, nhưng cachedData là static nên vẫn còn.
+            finish();
+        });
+        
+        logoButton.setOnClickListener(v->{
+            cachedData = null; // Về trang chủ coi như thoát Admin -> xóa cache
+            Intent intent = new Intent(AdminDashboardActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        });
+        
+        productButton.setOnClickListener(v->{
+            // Không xóa cache
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminProductManagementActivity.class);
+            startActivity(intent);
+            finish();
+        });
+        
+        shopButton.setOnClickListener(v->{
+            // Không xóa cache
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminStoreManagementActivity.class);
+            startActivity(intent);
+            finish();
+        });
+        
+        dashboardButton.setOnClickListener(v -> {
+            // Đang ở dashboard rồi, có thể reload hoặc không làm gì
+        });
     }
 
     private void fetchDashboardData() {
+        // Kiểm tra cache trước
+        if (cachedData != null) {
+            progressBar.setVisibility(View.GONE);
+            scrollView.setVisibility(View.VISIBLE);
+            updateUI(cachedData);
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
         scrollView.setVisibility(View.GONE);
 
@@ -71,6 +130,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     scrollView.setVisibility(View.VISIBLE);
                     AdminDashboardResponse data = response.body();
+                    cachedData = data; // Lưu vào cache
                     updateUI(data);
                 } else {
                     Toast.makeText(AdminDashboardActivity.this, "Không thể tải dữ liệu: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -99,5 +159,11 @@ public class AdminDashboardActivity extends AppCompatActivity {
         // Phần hoạt động hệ thống
         tvTotalShops.setText(String.valueOf(data.getTotalShops()));
         tvTotalUsers.setText(String.valueOf(data.getTotalUsers()));
+    }
+    
+    @Override
+    public void onBackPressed() {
+        cachedData = null; // Xóa cache khi ấn nút Back cứng của điện thoại
+        super.onBackPressed();
     }
 }

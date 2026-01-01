@@ -285,6 +285,7 @@ public class ProfileActivity extends AppCompatActivity {
         orderHistoryButton.setVisibility(View.GONE);
         savedAddressesButton.setVisibility(View.GONE);
         shopButton.setVisibility(View.GONE);
+        btnAdmin.setVisibility(View.GONE);
         helpSupportButton.setVisibility(View.GONE);
         logoutButton.setVisibility(View.GONE);
         cartButton.setVisibility(View.GONE);
