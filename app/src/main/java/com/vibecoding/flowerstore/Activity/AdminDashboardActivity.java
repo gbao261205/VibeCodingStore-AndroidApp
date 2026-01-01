@@ -33,7 +33,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
     private ImageView btnBack;
     private ProgressBar progressBar;
     private NestedScrollView scrollView;
-    private LinearLayout orderButton, dashboardButton, productButton, shopButton;
+    private LinearLayout orderButton, dashboardButton, productButton, shopButton, userButton, shopButton2;
     private FrameLayout logoButton;
 
     // Cache static để lưu dữ liệu trong bộ nhớ
@@ -66,7 +66,8 @@ public class AdminDashboardActivity extends AppCompatActivity {
         productButton = findViewById(R.id.productButton);
         shopButton = findViewById(R.id.shopButton);
         logoButton = findViewById(R.id.logoButton);
-
+        userButton = findViewById(R.id.userButton);
+        shopButton2 = findViewById(R.id.shopButton2);
 
         btnBack.setOnClickListener(v -> {
             cachedData = null; // Xóa cache khi thoát
@@ -91,9 +92,19 @@ public class AdminDashboardActivity extends AppCompatActivity {
             Intent intent = new Intent(AdminDashboardActivity.this, AdminStoreManagementActivity.class);
             startActivity(intent);
         });
+
+        shopButton2.setOnClickListener(v->{
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminStoreManagementActivity.class);
+            startActivity(intent);
+        });
         
         dashboardButton.setOnClickListener(v -> {
             // Đang ở dashboard rồi, có thể reload hoặc không làm gì
+        });
+
+        userButton.setOnClickListener(v->{
+            Intent intent = new Intent(AdminDashboardActivity.this, AdminUserManagementActivity.class);
+            startActivity(intent);
         });
     }
 

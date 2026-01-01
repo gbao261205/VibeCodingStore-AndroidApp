@@ -224,4 +224,7 @@ public interface ApiService {
 
     @GET("admin/shops")
     Call<List<ShopDTO>> getAllShop(@Header("Authorization") String authToken, @Query("keyword") String keyword);
+
+    @GET("admin/users")
+    Call<List<User>> getAllUsers(@Header("Authorization") String authToken, @Query("keyword") String keyword);
 }
