@@ -24,6 +24,9 @@ import com.vibecoding.flowerstore.Service.MessageResponse;
 import com.vibecoding.flowerstore.Service.RetrofitClient;
 import com.vibecoding.flowerstore.Service.ShopRegisterRequest;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import okhttp3.ResponseBody;
@@ -36,6 +39,7 @@ public class RegisterShopActivity extends AppCompatActivity {
     private final static String TAG = "RegisterShopActivity";
     private EditText edtShopName, edtDesc;
     private Button btnRegister;
+    private Button btnCheckStatus; // Added Check Status Button
     private ImageView ivBack;
     private TextView tvNotice;
     private ProgressBar progressBar;
@@ -54,6 +58,93 @@ public class RegisterShopActivity extends AppCompatActivity {
     private void setupListeners() {
         ivBack.setOnClickListener(v -> finish());
         btnRegister.setOnClickListener(v -> handleRegister());
+        btnCheckStatus.setOnClickListener(v -> handleCheckStatus()); // Added listener
+    }
+
+    private void handleCheckStatus() {
+        SharedPreferences prefs = getSharedPreferences("MY_APP_PREFS", Context.MODE_PRIVATE);
+        String token = prefs.getString("ACCESS_TOKEN", null);
+
+        if (token == null) {
+            Toast.makeText(this, "Phiên đăng nhập hết hạn, vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        tvNotice.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        btnCheckStatus.setEnabled(false);
+        btnRegister.setEnabled(false); // Disable register button too while checking
+
+        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
+        Call<ResponseBody> call = apiService.getShopRegisterStatus("Bearer " + token);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                progressBar.setVisibility(View.GONE);
+                btnCheckStatus.setEnabled(true);
+                btnRegister.setEnabled(true);
+
+                if (response.isSuccessful()) {
+                    try {
+                        // Thử đọc body dưới dạng chuỗi
+                        String rawJson = response.body() != null ? response.body().string() : "";
+                        // Nếu server trả về JSON, thử parse lấy message
+                        String message = rawJson;
+                        try {
+                            JSONObject jsonObject = new JSONObject(rawJson);
+                            if (jsonObject.has("message")) {
+                                message = jsonObject.getString("message");
+                            }
+                        } catch (JSONException e) {
+                            // Nếu không phải JSON, dùng luôn chuỗi raw
+                        }
+                        
+                        // Dịch sang tiếng Việt
+                        if ("User can register a shop.".equals(message)) {
+                            message = "Bạn có thể đăng ký cửa hàng ngay bây giờ.";
+                        } else if ("Shop registration is pending approval.".equals(message)) {
+                            message = "Đơn đăng ký cửa hàng đang chờ duyệt.";
+                        } else if ("Shop is already approved.".equals(message)) {
+                            message = "Cửa hàng của bạn đã được duyệt.";
+                        } else if ("Shop registration was rejected.".equals(message)) {
+                            message = "Đơn đăng ký cửa hàng đã bị từ chối.";
+                        }
+                        
+                        // Nếu message rỗng thì gán mặc định
+                        if (TextUtils.isEmpty(message)) {
+                            message = "Không có thông báo từ hệ thống.";
+                        }
+
+                        tvNotice.setText("Trạng thái: " + message);
+                    } catch (IOException e) {
+                         tvNotice.setText("Lỗi đọc dữ liệu: " + e.getMessage());
+                    }
+                    tvNotice.setVisibility(View.VISIBLE);
+                } else if (response.code() == 401) {
+                    tvNotice.setText("Phiên đăng nhập hết hạn.");
+                    tvNotice.setVisibility(View.VISIBLE);
+                } else {
+                    try {
+                         String errorMsg = "";
+                         if(response.errorBody() != null) errorMsg = response.errorBody().string();
+                         tvNotice.setText("Lỗi: " + response.code() + " " + errorMsg);
+                    } catch (IOException e) {
+                        tvNotice.setText("Lỗi: " + response.code());
+                    }
+                    tvNotice.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                btnCheckStatus.setEnabled(true);
+                btnRegister.setEnabled(true);
+                tvNotice.setText("Lỗi kết nối: " + t.getMessage());
+                tvNotice.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void handleRegister() {
@@ -150,6 +241,7 @@ public class RegisterShopActivity extends AppCompatActivity {
         edtShopName = findViewById(R.id.edtShopName);
         edtDesc = findViewById(R.id.edtDesc);
         btnRegister = findViewById(R.id.btnRegister);
+        btnCheckStatus = findViewById(R.id.btnCheckStatus); // Init view
         ivBack = findViewById(R.id.ivBack);
         tvNotice = findViewById(R.id.tvNotice);
         progressBar = findViewById(R.id.progressBar);

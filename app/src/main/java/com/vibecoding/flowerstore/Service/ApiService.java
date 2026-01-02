@@ -194,9 +194,9 @@ public interface ApiService {
 //    Call<MessageResponse> submitReview(@Body ReviewRequest request);
 //
 //    // ================== 7. SHOPS ==================
-//    @GET("shop/register-status")
-//    Call<MessageResponse> getShopRegisterStatus();
-//
+    @GET("shop/register-status")
+    Call<ResponseBody> getShopRegisterStatus(@Header("Authorization") String authToken);
+
     @POST("shop/register")
     Call<ResponseBody> registerShop( // Đổi từ MessageResponse sang ResponseBody
             @Header("Authorization") String authToken,
