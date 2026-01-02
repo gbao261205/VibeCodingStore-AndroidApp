@@ -85,6 +85,12 @@
         <activity
             android:name=".Activity.OrderHistoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".Activity.AllReviewsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.WriteReviewActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
