@@ -209,11 +209,14 @@ public interface ApiService {
 //    Call<MessageResponse> submitReview(@Body ReviewRequest request);
 //
 //    // ================== 7. SHOPS ==================
-//    @GET("shop/register-status")
-//    Call<MessageResponse> getShopRegisterStatus();
-//
-//    @POST("shop/register")
-//    Call<MessageResponse> registerShop(@Body ShopRegisterRequest request);
+    @GET("shop/register-status")
+    Call<ResponseBody> getShopRegisterStatus(@Header("Authorization") String authToken);
+
+    @POST("shop/register")
+    Call<ResponseBody> registerShop( // Đổi từ MessageResponse sang ResponseBody
+            @Header("Authorization") String authToken,
+            @Body ShopRegisterRequest request
+    );
 //
 //    @GET("shop/{shopId}")
 //    Call<ShopDetailResponse> getShopDetail(@Path("shopId") int shopId);
