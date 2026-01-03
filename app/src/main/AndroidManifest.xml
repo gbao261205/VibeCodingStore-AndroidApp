@@ -17,6 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:fullBackupContent,android:theme">
         <activity
+            android:name=".Activity.AdminUserDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.AdminProductManagementActivity"
             android:exported="false" />
         <activity
@@ -51,8 +54,7 @@
             android:exported="false" />
         <activity
             android:name=".Activity.CheckoutActivity"
-            android:exported="false" />
-        <!-- 1. Đặt IntroActivity làm màn hình khởi chạy -->
+            android:exported="false" /> <!-- 1. Đặt IntroActivity làm màn hình khởi chạy -->
         <activity
             android:name=".Activity.SearchActivity"
             android:exported="false" />
@@ -115,9 +117,7 @@
             android:exported="false" />
         <activity
             android:name=".Activity.OrderSuccessActivity"
-            android:exported="false" />
-
-        <!-- MoMo Payment Activity -->
+            android:exported="false" /> <!-- MoMo Payment Activity -->
         <activity
             android:name="vn.momo.momo_partner.MoMoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

@@ -23,10 +23,16 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.View
 
     private Context context;
     private List<UserDTO> userList;
+    private OnUserClickListener listener;
 
-    public AdminUserAdapter(Context context, List<UserDTO> userList) {
+    public interface OnUserClickListener {
+        void onUserClick(UserDTO user);
+    }
+
+    public AdminUserAdapter(Context context, List<UserDTO> userList, OnUserClickListener listener) {
         this.context = context;
         this.userList = userList;
+        this.listener = listener;
     }
 
     public void setUserList(List<UserDTO> userList) {
@@ -89,6 +95,13 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.View
                 .error(R.drawable.ic_person)       // Hiển thị khi tải lỗi
                 .fallback(R.drawable.ic_person)    // Hiển thị khi url là null
                 .into(holder.imgAvatar);
+
+        // Click event
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onUserClick(user);
+            }
+        });
     }
 
     @Override

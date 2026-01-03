@@ -1,5 +1,6 @@
 package com.vibecoding.flowerstore.Activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -77,7 +78,12 @@ public class AdminUserManagementActivity extends AppCompatActivity implements Vi
 
     private void setupRecyclerView() {
         rvUserList.setLayoutManager(new LinearLayoutManager(this));
-        userAdapter = new AdminUserAdapter(this, new ArrayList<>());
+        userAdapter = new AdminUserAdapter(this, new ArrayList<>(), user -> {
+            // Khi ấn vào user thì chuyển sang màn hình detail
+            Intent intent = new Intent(AdminUserManagementActivity.this, AdminUserDetailActivity.class);
+            intent.putExtra("user_detail", user);
+            startActivity(intent);
+        });
         rvUserList.setAdapter(userAdapter);
     }
 
