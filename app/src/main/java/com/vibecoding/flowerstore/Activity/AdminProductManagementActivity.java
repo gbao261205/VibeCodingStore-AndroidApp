@@ -45,6 +45,7 @@ public class AdminProductManagementActivity extends AppCompatActivity {
     private String currentSearchQuery = "";
     private LinearLayout orderButton, dashboardButton, productButton, shopButton;
     private FrameLayout logoButton;
+    private String userToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +58,7 @@ public class AdminProductManagementActivity extends AppCompatActivity {
         setupRecyclerView();
         
         apiService = RetrofitClient.getClient(this).create(ApiService.class);
-        fetchProducts(""); // Load ban đầu
+        checkLoginAndFetchData();
 
         setupListeners();
     }
@@ -138,13 +139,26 @@ public class AdminProductManagementActivity extends AppCompatActivity {
         btnClearSearch.setOnClickListener(v -> etSearch.setText(""));
     }
 
+    private void checkLoginAndFetchData() {
+        SharedPreferences prefs = getSharedPreferences("MY_APP_PREFS", MODE_PRIVATE);
+        String rawToken = prefs.getString("ACCESS_TOKEN", null);
+
+        if (rawToken == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        userToken = "Bearer " + rawToken;
+        fetchProducts(""); // Load ban đầu
+    }
+
     private void fetchProducts(String keyword) {
         progressBar.setVisibility(View.VISIBLE);
         rvProductList.setVisibility(View.GONE);
 
         // API này có thể lọc trên server nếu backend hỗ trợ keyword
         // Hoặc trả về list full nếu keyword rỗng
-        Call<List<ProductDTO>> call = apiService.getAllProducts(keyword);
+        Call<List<ProductDTO>> call = apiService.getAllProducts(userToken, keyword);
         call.enqueue(new Callback<List<ProductDTO>>() {
             @Override
             public void onResponse(Call<List<ProductDTO>> call, Response<List<ProductDTO>> response) {

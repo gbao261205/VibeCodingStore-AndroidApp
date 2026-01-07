@@ -252,7 +252,7 @@ public interface ApiService {
     Call<List<OrderDTO>> getAllOrders(@Header("Authorization") String authToken);
 
     @GET("admin/products")
-    Call<List<ProductDTO>> getAllProducts(@Query("keyword") String keyword);
+    Call<List<ProductDTO>> getAllProducts(@Header("Authorization") String authToken, @Query("keyword") String keyword);
 
     @GET("admin/shops")
     Call<List<ShopDTO>> getAllShop(@Header("Authorization") String authToken, @Query("keyword") String keyword);
